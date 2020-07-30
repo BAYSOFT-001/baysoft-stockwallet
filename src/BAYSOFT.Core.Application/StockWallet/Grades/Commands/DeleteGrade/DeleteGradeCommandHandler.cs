@@ -22,9 +22,9 @@ namespace BAYSOFT.Core.Application.StockWallet.Grades.Commands.DeleteGrade
         }
         public override async Task<DeleteGradeCommandResponse> Handle(DeleteGradeCommand request, CancellationToken cancellationToken)
         {
-            var id = request.Project(x => x.GradeID);
+            var id = request.Project(x => x.StockID);
 
-            var data = await Context.Grades.SingleOrDefaultAsync(x => x.GradeID == id);
+            var data = await Context.Grades.SingleOrDefaultAsync(x => x.StockID == id);
 
             if (data == null)
                 throw new Exception("Grade not found!");

@@ -6,7 +6,7 @@ namespace BAYSOFT.Core.Application.StockWallet.Grades.Commands.DeleteGrade
     {
         public DeleteGradeCommand()
         {
-            ConfigKeys(x => x.GradeID);
+            ConfigKeys(x => x.StockID);
 
             // Configures supressed properties & response properties
             //ConfigSuppressedProperties(x => x);

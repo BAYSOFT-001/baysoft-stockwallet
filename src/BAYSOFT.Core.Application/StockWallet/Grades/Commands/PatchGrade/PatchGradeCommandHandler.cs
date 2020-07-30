@@ -23,9 +23,9 @@ namespace BAYSOFT.Core.Application.StockWallet.Grades.Commands.PatchGrade
         }
         public override async Task<PatchGradeCommandResponse> Handle(PatchGradeCommand request, CancellationToken cancellationToken)
         {
-            var id = request.Project(x => x.GradeID);
+            var id = request.Project(x => x.StockID);
 
-            var data = await Context.Grades.SingleOrDefaultAsync(x => x.GradeID == id);
+            var data = await Context.Grades.SingleOrDefaultAsync(x => x.StockID == id);
 
             if (data == null)
             {

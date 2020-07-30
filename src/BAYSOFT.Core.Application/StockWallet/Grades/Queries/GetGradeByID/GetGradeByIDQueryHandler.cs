@@ -18,10 +18,10 @@ namespace BAYSOFT.Core.Application.StockWallet.Grades.Queries.GetGradeByID
         }
         public async Task<GetGradeByIDQueryResponse> Handle(GetGradeByIDQuery request, CancellationToken cancellationToken)
         {
-            var id = request.Project(x => x.GradeID);
+            var id = request.Project(x => x.StockID);
 
             var data = await Context.Grades
-                .Where(x => x.GradeID == id)
+                .Where(x => x.StockID == id)
                 .Select(request)
                 .AsNoTracking()
                 .SingleOrDefaultAsync();

@@ -11,6 +11,7 @@ namespace BAYSOFT.Core.Domain.Entities.StockWallet
         public decimal Value { get; set; }
         public DateTime RegistrationDate { get; set; }
         public int StockID { get; set; }
+        public Stock Stock { get; set; }
         public Price()
         {
         }

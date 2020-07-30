@@ -6,7 +6,7 @@ namespace BAYSOFT.Core.Application.StockWallet.Grades.Queries.GetGradeByID
     {
         public GetGradeByIDQuery()
         {
-            ConfigKeys(x => x.GradeID);
+            ConfigKeys(x => x.StockID);
             
             // Configures supressed properties & response properties
             //ConfigSuppressedProperties(x => x);

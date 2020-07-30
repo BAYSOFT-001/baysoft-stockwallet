@@ -23,8 +23,8 @@ namespace BAYSOFT.Core.Application.StockWallet.Grades.Commands.PutGrade
         }
         public override async Task<PutGradeCommandResponse> Handle(PutGradeCommand request, CancellationToken cancellationToken)
         {
-            var id = request.Project(x => x.GradeID);
-            var data = await Context.Grades.SingleOrDefaultAsync(x => x.GradeID == id);
+            var id = request.Project(x => x.StockID);
+            var data = await Context.Grades.SingleOrDefaultAsync(x => x.StockID == id);
 
             if (data == null)
             {

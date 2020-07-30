@@ -19,7 +19,7 @@ namespace BAYSOFT.Presentations.WebAPI.Resources
             return await Mediator.Send(request, cancellationToken);
         }
 
-        [HttpGet("{gradeid}")]
+        [HttpGet("{stockid}")]
         public async Task<ActionResult<GetGradeByIDQueryResponse>> Get(GetGradeByIDQuery request, CancellationToken cancellationToken = default(CancellationToken))
         {
             return await Mediator.Send(request, cancellationToken);
@@ -31,19 +31,19 @@ namespace BAYSOFT.Presentations.WebAPI.Resources
             return await Mediator.Send(request, cancellationToken);
         }
 
-        [HttpPut("{gradeid}")]
+        [HttpPut("{stockid}")]
         public async Task<ActionResult<PutGradeCommandResponse>> Put(PutGradeCommand request, CancellationToken cancellationToken = default(CancellationToken))
         {
             return await Mediator.Send(request, cancellationToken);
         }
 
-        [HttpPatch("{gradeid}")]
+        [HttpPatch("{stockid}")]
         public async Task<ActionResult<PatchGradeCommandResponse>> Patch(PatchGradeCommand request, CancellationToken cancellationToken = default(CancellationToken))
         {
             return await Mediator.Send(request, cancellationToken);
         }
 
-        [HttpDelete("{gradeid}")]
+        [HttpDelete("{stockid}")]
         public async Task<ActionResult<DeleteGradeCommandResponse>> Delete(DeleteGradeCommand request, CancellationToken cancellationToken = default(CancellationToken))
         {
             return await Mediator.Send(request, cancellationToken);
