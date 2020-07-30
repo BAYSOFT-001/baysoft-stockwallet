@@ -7,10 +7,10 @@ namespace BAYSOFT.Core.Application.StockWallet.Wallets.Commands.PostWallet
         public PostWalletCommand()
         {
             ConfigKeys(x => x.WalletID);
-            
+
             // Configures supressed properties & response properties
-            //ConfigSuppressedProperties(x => x);
-            //ConfigSuppressedResponseProperties(x => x);       
+            ConfigSuppressedProperties(x => x.Orders);
+            ConfigSuppressedResponseProperties(x => x.Orders);
         }
     }
 }

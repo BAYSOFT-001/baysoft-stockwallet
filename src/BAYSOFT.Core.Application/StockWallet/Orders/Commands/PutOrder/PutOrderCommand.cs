@@ -7,10 +7,12 @@ namespace BAYSOFT.Core.Application.StockWallet.Orders.Commands.PutOrder
         public PutOrderCommand()
         {
             ConfigKeys(x => x.OrderID);
-            
+
             // Configures supressed properties & response properties
-            //ConfigSuppressedProperties(x => x);
-            //ConfigSuppressedResponseProperties(x => x);  
+            ConfigSuppressedProperties(x => x.Stock);
+            ConfigSuppressedProperties(x => x.Wallet);
+            ConfigSuppressedResponseProperties(x => x.Stock);
+            ConfigSuppressedResponseProperties(x => x.Wallet);
         }
     }
 }

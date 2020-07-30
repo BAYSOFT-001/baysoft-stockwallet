@@ -7,10 +7,10 @@ namespace BAYSOFT.Core.Application.StockWallet.Stops.Queries.GetStopByID
         public GetStopByIDQuery()
         {
             ConfigKeys(x => x.StopID);
-            
+
             // Configures supressed properties & response properties
-            //ConfigSuppressedProperties(x => x);
-            //ConfigSuppressedResponseProperties(x => x);  
+            ConfigSuppressedProperties(x => x.Stock);
+            ConfigSuppressedResponseProperties(x => x.Stock);
         }
     }
 }

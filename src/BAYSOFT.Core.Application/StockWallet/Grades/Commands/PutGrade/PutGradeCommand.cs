@@ -7,10 +7,10 @@ namespace BAYSOFT.Core.Application.StockWallet.Grades.Commands.PutGrade
         public PutGradeCommand()
         {
             ConfigKeys(x => x.StockID);
-            
+
             // Configures supressed properties & response properties
-            //ConfigSuppressedProperties(x => x);
-            //ConfigSuppressedResponseProperties(x => x);  
+            ConfigSuppressedProperties(x => x.Stock);
+            ConfigSuppressedResponseProperties(x => x.Stock);
         }
     }
 }

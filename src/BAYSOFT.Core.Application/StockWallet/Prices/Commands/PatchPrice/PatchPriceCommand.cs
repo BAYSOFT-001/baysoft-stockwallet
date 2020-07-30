@@ -9,8 +9,8 @@ namespace BAYSOFT.Core.Application.StockWallet.Prices.Commands.PatchPrice
             ConfigKeys(x => x.PriceID);
 
             // Configures supressed properties & response properties
-            //ConfigSuppressedProperties(x => x);
-            //ConfigSuppressedResponseProperties(x => x);
+            ConfigSuppressedProperties(x => x.Stock);
+            ConfigSuppressedResponseProperties(x => x.Stock);
         }
     }
 }

@@ -9,8 +9,8 @@ namespace BAYSOFT.Core.Application.StockWallet.Stops.Commands.PatchStop
             ConfigKeys(x => x.StopID);
 
             // Configures supressed properties & response properties
-            //ConfigSuppressedProperties(x => x);
-            //ConfigSuppressedResponseProperties(x => x);
+            ConfigSuppressedProperties(x => x.Stock);
+            ConfigSuppressedResponseProperties(x => x.Stock);
         }
     }
 }

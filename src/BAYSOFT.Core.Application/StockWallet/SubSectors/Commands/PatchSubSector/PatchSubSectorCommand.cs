@@ -9,8 +9,10 @@ namespace BAYSOFT.Core.Application.StockWallet.SubSectors.Commands.PatchSubSecto
             ConfigKeys(x => x.SubSectorID);
 
             // Configures supressed properties & response properties
-            //ConfigSuppressedProperties(x => x);
-            //ConfigSuppressedResponseProperties(x => x);
+            ConfigSuppressedProperties(x => x.Sector);
+            ConfigSuppressedProperties(x => x.Stocks);
+            ConfigSuppressedResponseProperties(x => x.Sector);
+            ConfigSuppressedResponseProperties(x => x.Stocks);
         }
     }
 }
