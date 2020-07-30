@@ -1,7 +1,7 @@
 using ModelWrapper;
-using BAYSOFT.Core.Domain.Entities.Default;
+using BAYSOFT.Core.Domain.Entities.StockWallet;
 
-namespace BAYSOFT.Core.Application.Default.Samples.Queries.GetSampleByID
+namespace BAYSOFT.Core.Application.StockWallet.Samples.Queries.GetSampleByID
 {
     public class GetSampleByIDQueryResponse : ApplicationResponse<Sample>
     {

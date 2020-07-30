@@ -1,19 +1,19 @@
-﻿using BAYSOFT.Core.Domain.Entities.Default;
+﻿using BAYSOFT.Core.Domain.Entities.StockWallet;
 using BAYSOFT.Core.Domain.Interfaces.Infrastructures.Data.Contexts;
 using Microsoft.EntityFrameworkCore;
 
 namespace BAYSOFT.Core.Infrastructures.Data.Contexts
 {
-    public class DefaultDbContext : DbContext, IDefaultDbContext
+    public class StockWalletDbContext : DbContext, IStockWalletDbContext
     {
         public DbSet<Sample> Samples { get; set; }
 
-        protected DefaultDbContext()
+        protected StockWalletDbContext()
         {
             Database.Migrate();
         }
 
-        public DefaultDbContext(DbContextOptions options) : base(options)
+        public StockWalletDbContext(DbContextOptions options) : base(options)
         {
             Database.Migrate();
         }

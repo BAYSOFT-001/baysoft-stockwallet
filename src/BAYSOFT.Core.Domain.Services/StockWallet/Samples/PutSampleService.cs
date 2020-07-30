@@ -1,20 +1,17 @@
-﻿using BAYSOFT.Core.Domain.Entities.Default;
+﻿using BAYSOFT.Core.Domain.Entities.StockWallet;
 using BAYSOFT.Core.Domain.Interfaces.Infrastructures.Data.Contexts;
-using BAYSOFT.Core.Domain.Interfaces.Services.Default.Samples;
-using BAYSOFT.Core.Domain.Validations.DomainValidations.Default.Samples;
-using BAYSOFT.Core.Domain.Validations.EntityValidations.Default;
-using System;
-using System.Collections.Generic;
-using System.Linq;
+using BAYSOFT.Core.Domain.Interfaces.Services.StockWallet.Samples;
+using BAYSOFT.Core.Domain.Validations.DomainValidations.StockWallet.Samples;
+using BAYSOFT.Core.Domain.Validations.EntityValidations.StockWallet;
 using System.Threading.Tasks;
 
-namespace BAYSOFT.Core.Domain.Services.Default.Samples
+namespace BAYSOFT.Core.Domain.Services.StockWallet.Samples
 {
     public class PutSampleService : DomainService<Sample>, IPutSampleService
     {
-        private IDefaultDbContext Context { get; set; }
+        private IStockWalletDbContext Context { get; set; }
         public PutSampleService(
-            IDefaultDbContext context,
+            IStockWalletDbContext context,
             SampleValidator entityValidator,
             PutSampleSpecificationsValidator domainValidator
         ) : base(entityValidator, domainValidator)

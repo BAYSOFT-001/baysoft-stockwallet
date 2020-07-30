@@ -7,12 +7,12 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace BAYSOFT.Core.Application.Default.Samples.Queries.GetSampleByID
+namespace BAYSOFT.Core.Application.StockWallet.Samples.Queries.GetSampleByID
 {
     public class GetSampleByIDQueryHandler : IRequestHandler<GetSampleByIDQuery, GetSampleByIDQueryResponse>
     {
-        private IDefaultDbContext Context { get; set; }
-        public GetSampleByIDQueryHandler(IDefaultDbContext context)
+        private IStockWalletDbContext Context { get; set; }
+        public GetSampleByIDQueryHandler(IStockWalletDbContext context)
         {
             Context = context;
         }

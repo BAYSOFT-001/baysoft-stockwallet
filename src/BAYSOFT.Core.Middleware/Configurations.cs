@@ -1,9 +1,9 @@
 ﻿using BAYSOFT.Core.Domain.Interfaces.Infrastructures.Data.Contexts;
-using BAYSOFT.Core.Domain.Interfaces.Services.Default.Samples;
-using BAYSOFT.Core.Domain.Services.Default.Samples;
-using BAYSOFT.Core.Domain.Validations.DomainValidations.Default.Samples;
-using BAYSOFT.Core.Domain.Validations.EntityValidations.Default;
-using BAYSOFT.Core.Domain.Validations.Specifications.Default.Samples;
+using BAYSOFT.Core.Domain.Interfaces.Services.StockWallet.Samples;
+using BAYSOFT.Core.Domain.Services.StockWallet.Samples;
+using BAYSOFT.Core.Domain.Validations.DomainValidations.StockWallet.Samples;
+using BAYSOFT.Core.Domain.Validations.EntityValidations.StockWallet;
+using BAYSOFT.Core.Domain.Validations.Specifications.StockWallet.Samples;
 using BAYSOFT.Core.Infrastructures.Data.Contexts;
 using MediatR;
 using Microsoft.AspNetCore.Builder;
@@ -20,12 +20,12 @@ namespace BAYSOFT.Core.Middleware
     {
         public static IServiceCollection AddMiddleware(this IServiceCollection services, IConfiguration configuration, Assembly presentationAssembly)
         {
-            services.AddDbContext<IDefaultDbContext, DefaultDbContext>(options =>
+            services.AddDbContext<IStockWalletDbContext, StockWalletDbContext>(options =>
                 options.UseSqlServer(
                     configuration.GetConnectionString("DefaultConnection"),
                     sql => sql.MigrationsAssembly(presentationAssembly.GetName().Name)));
             
-            services.AddDbContext<IDefaultDbContextQuery, DefaultDbContext>(options =>
+            services.AddDbContext<IStockWalletDbContextQuery, StockWalletDbContext>(options =>
                 options.UseSqlServer(
                     configuration.GetConnectionString("DefaultConnection"),
                     sql => sql.MigrationsAssembly(presentationAssembly.GetName().Name)));

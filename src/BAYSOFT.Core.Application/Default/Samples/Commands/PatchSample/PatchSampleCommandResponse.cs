@@ -1,7 +1,7 @@
 using ModelWrapper;
-using BAYSOFT.Core.Domain.Entities.Default;
+using BAYSOFT.Core.Domain.Entities.StockWallet;
 
-namespace BAYSOFT.Core.Application.Default.Samples.Commands.PatchSample
+namespace BAYSOFT.Core.Application.StockWallet.Samples.Commands.PatchSample
 {
     public class PatchSampleCommandResponse : ApplicationResponse<Sample>
     {

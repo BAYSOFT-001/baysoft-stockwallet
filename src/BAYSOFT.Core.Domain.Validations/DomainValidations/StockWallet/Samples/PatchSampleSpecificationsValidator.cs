@@ -1,16 +1,16 @@
-﻿using BAYSOFT.Core.Domain.Entities.Default;
-using BAYSOFT.Core.Domain.Validations.Specifications.Default.Samples;
+﻿using BAYSOFT.Core.Domain.Entities.StockWallet;
+using BAYSOFT.Core.Domain.Validations.Specifications.StockWallet.Samples;
 using NetDevPack.Specification;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace BAYSOFT.Core.Domain.Validations.DomainValidations.Default.Samples
+namespace BAYSOFT.Core.Domain.Validations.DomainValidations.StockWallet.Samples
 {
-    public class PutSampleSpecificationsValidator : SpecValidator<Sample>
+    public class PatchSampleSpecificationsValidator : SpecValidator<Sample>
     {
-        public PutSampleSpecificationsValidator(
+        public PatchSampleSpecificationsValidator(
             SampleDescriptionAlreadyExistsSpecification sampleDescriptionAlreadyExistsSpecification
         )
         {

@@ -4,17 +4,17 @@ using BAYSOFT.Core.Domain.Interfaces.Infrastructures.Data.Contexts;
 using System;
 using System.Threading;
 using System.Threading.Tasks;
-using BAYSOFT.Core.Domain.Entities.Default;
-using BAYSOFT.Core.Domain.Interfaces.Services.Default.Samples;
+using BAYSOFT.Core.Domain.Entities.StockWallet;
+using BAYSOFT.Core.Domain.Interfaces.Services.StockWallet.Samples;
 
-namespace BAYSOFT.Core.Application.Default.Samples.Commands.DeleteSample
+namespace BAYSOFT.Core.Application.StockWallet.Samples.Commands.DeleteSample
 {
     public class DeleteSampleCommandHandler : ApplicationRequestHandler<Sample, DeleteSampleCommand, DeleteSampleCommandResponse>
     {
-        public IDefaultDbContext Context { get; set; }
+        public IStockWalletDbContext Context { get; set; }
         private IDeleteSampleService DeleteService { get; set; }
         public DeleteSampleCommandHandler(
-            IDefaultDbContext context,
+            IStockWalletDbContext context,
             IDeleteSampleService deleteService)
         {
             Context = context;

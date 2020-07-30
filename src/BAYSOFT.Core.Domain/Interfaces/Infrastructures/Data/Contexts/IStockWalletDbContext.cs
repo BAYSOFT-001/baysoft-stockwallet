@@ -3,7 +3,7 @@ using System.Threading.Tasks;
 
 namespace BAYSOFT.Core.Domain.Interfaces.Infrastructures.Data.Contexts
 {
-    public interface IDefaultDbContext : IDefaultDbContextQuery
+    public interface IStockWalletDbContext : IStockWalletDbContextQuery
     {
         public int SaveChanges(bool acceptAllChangesOnSuccess);
         public int SaveChanges();

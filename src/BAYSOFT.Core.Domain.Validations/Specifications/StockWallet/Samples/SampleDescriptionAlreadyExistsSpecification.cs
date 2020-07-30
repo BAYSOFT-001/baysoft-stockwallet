@@ -1,18 +1,16 @@
-﻿using BAYSOFT.Core.Domain.Entities.Default;
+﻿using BAYSOFT.Core.Domain.Entities.StockWallet;
 using BAYSOFT.Core.Domain.Interfaces.Infrastructures.Data.Contexts;
 using NetDevPack.Specification;
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
-using System.Threading.Tasks;
 
-namespace BAYSOFT.Core.Domain.Validations.Specifications.Default.Samples
+namespace BAYSOFT.Core.Domain.Validations.Specifications.StockWallet.Samples
 {
     public class SampleDescriptionAlreadyExistsSpecification : Specification<Sample>
     {
-        private IDefaultDbContextQuery Context { get; set; }
-        public SampleDescriptionAlreadyExistsSpecification(IDefaultDbContextQuery context)
+        private IStockWalletDbContextQuery Context { get; set; }
+        public SampleDescriptionAlreadyExistsSpecification(IStockWalletDbContextQuery context)
         {
             Context = context;
         }

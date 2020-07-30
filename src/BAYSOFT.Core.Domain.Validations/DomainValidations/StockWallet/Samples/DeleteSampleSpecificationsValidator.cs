@@ -1,7 +1,7 @@
-﻿using BAYSOFT.Core.Domain.Entities.Default;
+﻿using BAYSOFT.Core.Domain.Entities.StockWallet;
 using NetDevPack.Specification;
 
-namespace BAYSOFT.Core.Domain.Validations.DomainValidations.Default.Samples
+namespace BAYSOFT.Core.Domain.Validations.DomainValidations.StockWallet.Samples
 {
     public class DeleteSampleSpecificationsValidator : SpecValidator<Sample>
     {

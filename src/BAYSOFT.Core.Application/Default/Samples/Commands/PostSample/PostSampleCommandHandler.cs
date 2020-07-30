@@ -1,18 +1,18 @@
-using BAYSOFT.Core.Domain.Entities.Default;
+using BAYSOFT.Core.Domain.Entities.StockWallet;
 using BAYSOFT.Core.Domain.Interfaces.Infrastructures.Data.Contexts;
-using BAYSOFT.Core.Domain.Interfaces.Services.Default.Samples;
+using BAYSOFT.Core.Domain.Interfaces.Services.StockWallet.Samples;
 using ModelWrapper.Extensions.Post;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace BAYSOFT.Core.Application.Default.Samples.Commands.PostSample
+namespace BAYSOFT.Core.Application.StockWallet.Samples.Commands.PostSample
 {
     public class PostSampleCommandHandler : ApplicationRequestHandler<Sample, PostSampleCommand, PostSampleCommandResponse>
     {
-        private IDefaultDbContext Context { get; set; }
+        private IStockWalletDbContext Context { get; set; }
         private IPostSampleService PostService { get; set; }
         public PostSampleCommandHandler(
-            IDefaultDbContext context,
+            IStockWalletDbContext context,
             IPostSampleService postService
         )
         {

@@ -1,9 +1,9 @@
-﻿using BAYSOFT.Core.Application.Default.Samples.Commands.DeleteSample;
-using BAYSOFT.Core.Application.Default.Samples.Commands.PatchSample;
-using BAYSOFT.Core.Application.Default.Samples.Commands.PostSample;
-using BAYSOFT.Core.Application.Default.Samples.Commands.PutSample;
-using BAYSOFT.Core.Application.Default.Samples.Queries.GetSampleByID;
-using BAYSOFT.Core.Application.Default.Samples.Queries.GetSamplesByFilter;
+﻿using BAYSOFT.Core.Application.StockWallet.Samples.Commands.DeleteSample;
+using BAYSOFT.Core.Application.StockWallet.Samples.Commands.PatchSample;
+using BAYSOFT.Core.Application.StockWallet.Samples.Commands.PostSample;
+using BAYSOFT.Core.Application.StockWallet.Samples.Commands.PutSample;
+using BAYSOFT.Core.Application.StockWallet.Samples.Queries.GetSampleByID;
+using BAYSOFT.Core.Application.StockWallet.Samples.Queries.GetSamplesByFilter;
 using BAYSOFT.Presentations.WebAPI.Abstractions.Controllers;
 using Microsoft.AspNetCore.Mvc;
 using System.Threading;

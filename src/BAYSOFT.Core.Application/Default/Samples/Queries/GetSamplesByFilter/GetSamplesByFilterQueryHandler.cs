@@ -5,12 +5,12 @@ using BAYSOFT.Core.Domain.Interfaces.Infrastructures.Data.Contexts;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace BAYSOFT.Core.Application.Default.Samples.Queries.GetSamplesByFilter
+namespace BAYSOFT.Core.Application.StockWallet.Samples.Queries.GetSamplesByFilter
 {
     public class GetSamplesByFilterQueryHandler : IRequestHandler<GetSamplesByFilterQuery, GetSamplesByFilterQueryResponse>
     {
-        private IDefaultDbContext Context { get; set; }
-        public GetSamplesByFilterQueryHandler(IDefaultDbContext context)
+        private IStockWalletDbContext Context { get; set; }
+        public GetSamplesByFilterQueryHandler(IStockWalletDbContext context)
         {
             Context = context;
         }

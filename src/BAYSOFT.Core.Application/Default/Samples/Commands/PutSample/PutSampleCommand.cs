@@ -1,6 +1,6 @@
-using BAYSOFT.Core.Domain.Entities.Default;
+using BAYSOFT.Core.Domain.Entities.StockWallet;
 
-namespace BAYSOFT.Core.Application.Default.Samples.Commands.PutSample
+namespace BAYSOFT.Core.Application.StockWallet.Samples.Commands.PutSample
 {
     public class PutSampleCommand : ApplicationRequest<Sample, PutSampleCommandResponse>
     {

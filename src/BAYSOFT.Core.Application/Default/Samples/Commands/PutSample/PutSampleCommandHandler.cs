@@ -5,17 +5,17 @@ using BAYSOFT.Core.Domain.Interfaces.Infrastructures.Data.Contexts;
 using System;
 using System.Threading;
 using System.Threading.Tasks;
-using BAYSOFT.Core.Domain.Entities.Default;
-using BAYSOFT.Core.Domain.Interfaces.Services.Default.Samples;
+using BAYSOFT.Core.Domain.Entities.StockWallet;
+using BAYSOFT.Core.Domain.Interfaces.Services.StockWallet.Samples;
 
-namespace BAYSOFT.Core.Application.Default.Samples.Commands.PutSample
+namespace BAYSOFT.Core.Application.StockWallet.Samples.Commands.PutSample
 {
     public class PutSampleCommandHandler : ApplicationRequestHandler<Sample, PutSampleCommand, PutSampleCommandResponse>
     {
-        public IDefaultDbContext Context { get; set; }
+        public IStockWalletDbContext Context { get; set; }
         private IPutSampleService PutService { get; set; }
         public PutSampleCommandHandler(
-            IDefaultDbContext context,
+            IStockWalletDbContext context,
             IPutSampleService putService)
         {
             Context = context;
