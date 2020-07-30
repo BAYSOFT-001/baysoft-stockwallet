@@ -1,6 +1,7 @@
 ﻿using BAYSOFT.Core.Domain.Entities.StockWallet;
 using BAYSOFT.Core.Domain.Interfaces.Infrastructures.Data.Contexts;
 using Microsoft.EntityFrameworkCore;
+using System.Security.Cryptography.X509Certificates;
 
 namespace BAYSOFT.Core.Infrastructures.Data.Contexts
 {
@@ -27,6 +28,51 @@ namespace BAYSOFT.Core.Infrastructures.Data.Contexts
         }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            var defaultDecimalSQLType = "DECIMAL(18,4)";
+
+            modelBuilder.Entity<Wallet>()
+                .Property(x => x.Balance)
+                .HasColumnType(defaultDecimalSQLType);
+            modelBuilder.Entity<Order>()
+                .Property(x => x.Value)
+                .HasColumnType(defaultDecimalSQLType);
+            modelBuilder.Entity<Price>()
+                .Property(x => x.Value)
+                .HasColumnType(defaultDecimalSQLType);
+            modelBuilder.Entity<Stop>()
+                .Property(x => x.Gain1)
+                .HasColumnType(defaultDecimalSQLType);
+            modelBuilder.Entity<Stop>()
+                .Property(x => x.Gain2)
+                .HasColumnType(defaultDecimalSQLType);
+            modelBuilder.Entity<Stop>()
+                .Property(x => x.Loss)
+                .HasColumnType(defaultDecimalSQLType);
+            modelBuilder.Entity<Grade>()
+                .Property(x => x.SectorAndQuality)
+                .HasColumnType(defaultDecimalSQLType);
+            modelBuilder.Entity<Grade>()
+                .Property(x => x.RecommendedWallet)
+                .HasColumnType(defaultDecimalSQLType);
+            modelBuilder.Entity<Grade>()
+                .Property(x => x.Dividend)
+                .HasColumnType(defaultDecimalSQLType);
+            modelBuilder.Entity<Grade>()
+                .Property(x => x.ReturnOnEquity)
+                .HasColumnType(defaultDecimalSQLType);
+            modelBuilder.Entity<Grade>()
+                .Property(x => x.ProfitLast5Years)
+                .HasColumnType(defaultDecimalSQLType);
+            modelBuilder.Entity<Grade>()
+                .Property(x => x.NetMargin)
+                .HasColumnType(defaultDecimalSQLType);
+            modelBuilder.Entity<Grade>()
+                .Property(x => x.Indebtedness)
+                .HasColumnType(defaultDecimalSQLType);
+            modelBuilder.Entity<Grade>()
+                .Property(x => x.Overlap)
+                .HasColumnType(defaultDecimalSQLType);
+
             modelBuilder.Entity<Grade>()
                 .HasKey(x => x.StockID);
             modelBuilder.Entity<Grade>()
