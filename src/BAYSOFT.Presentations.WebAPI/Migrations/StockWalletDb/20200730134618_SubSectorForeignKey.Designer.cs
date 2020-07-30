@@ -4,14 +4,16 @@ using BAYSOFT.Core.Infrastructures.Data.Contexts;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace BAYSOFT.Presentations.WebAPI.Migrations.StockWalletDb
 {
     [DbContext(typeof(StockWalletDbContext))]
-    partial class StockWalletDbContextModelSnapshot : ModelSnapshot
+    [Migration("20200730134618_SubSectorForeignKey")]
+    partial class SubSectorForeignKey
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
