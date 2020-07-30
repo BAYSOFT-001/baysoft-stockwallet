@@ -25,5 +25,13 @@ namespace BAYSOFT.Core.Infrastructures.Data.Contexts
         {
             Database.Migrate();
         }
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            modelBuilder.Entity<Grade>()
+                .HasKey(x => x.StockID);
+            modelBuilder.Entity<Grade>()
+                .HasOne(x => x.Stock)
+                .WithOne(x => x.Grade);
+        }
     }
 }
