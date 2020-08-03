@@ -24,6 +24,14 @@ namespace BAYSOFT.Presentations.WebAPI
 
             services.AddMiddleware(Configuration, assembly);
 
+            services.AddCors(options =>
+            {
+                options.AddDefaultPolicy(policy =>
+                {
+                    policy.WithOrigins("https://localhost:6101");
+                });
+            });
+
             services.AddControllers();
         }
 
@@ -35,6 +43,7 @@ namespace BAYSOFT.Presentations.WebAPI
                 app.UseDeveloperExceptionPage();
             }
 
+            app.UseCors();
             app.UseHttpsRedirection();
 
             app.UseRouting();
