@@ -23,16 +23,23 @@ var Index = /** @class */ (function (_super) {
     function Index() {
         var _this = _super !== null && _super.apply(this, arguments) || this;
         _this.state = {
-            txtQuery: ""
+            query: "",
+            pageNumber: 1,
+            pageSize: 10
         };
         //public componentDidUpdate() {
         //    console.log('Update!');
         //    this.ensureDataFetched();
         //}
-        _this.handleQueryChange = function (e) {
-            _this.setState({ txtQuery: e.target.value });
+        _this.handleQueryChange = function (text) {
+            _this.setState({ query: text });
         };
-        _this.handleSubmitQuery = function (e) {
+        _this.handleSubmitQuery = function () {
+            _this.ensureDataFetched();
+        };
+        _this.handlePagination = function (number) {
+            console.log(number);
+            _this.setState({ pageNumber: number });
             _this.ensureDataFetched();
         };
         return _this;
@@ -42,7 +49,8 @@ var Index = /** @class */ (function (_super) {
         this.ensureDataFetched();
     };
     Index.prototype.render = function () {
-        var txtQuery = this.state.txtQuery;
+        var _this = this;
+        var query = this.state.query;
         return (React.createElement(React.Fragment, null,
             React.createElement("div", { className: "row" },
                 React.createElement("div", { className: "col-10" },
@@ -54,20 +62,21 @@ var Index = /** @class */ (function (_super) {
             React.createElement("div", { className: "row mb-3" },
                 React.createElement("div", { className: "col" },
                     React.createElement(reactstrap_1.InputGroup, null,
-                        React.createElement(reactstrap_1.Input, { value: txtQuery, onChange: this.handleQueryChange }),
+                        React.createElement(reactstrap_1.Input, { value: query, onChange: function (e) { return _this.handleQueryChange(e.target.value); } }),
                         React.createElement(reactstrap_1.InputGroupAddon, { addonType: "append" },
-                            React.createElement(reactstrap_1.Button, { color: "secondary", onClick: this.handleSubmitQuery }, "Search!"))))),
+                            React.createElement(reactstrap_1.Button, { color: "secondary", onClick: function () { return _this.handleSubmitQuery(); } }, "Search!"))))),
             React.createElement("div", { className: "row" },
                 React.createElement("div", { className: "col" }, this.renderTable())),
+            React.createElement("div", { className: "row" },
+                React.createElement("div", { className: "col" }, this.renderPagenation(this.props.pageSize, this.props.pageNumber, this.props.resultCount, 5))),
             React.createElement("hr", null),
             React.createElement("div", { className: "row" },
                 React.createElement("div", { className: "col" },
                     React.createElement(react_router_dom_1.Link, { className: "btn btn-link", to: "/" }, "Back")))));
     };
     Index.prototype.ensureDataFetched = function () {
-        var pageNumber = 1;
-        var pageSize = 10;
-        var query = this.state.txtQuery;
+        console.log(this.state);
+        var _a = this.state, pageNumber = _a.pageNumber, pageSize = _a.pageSize, query = _a.query;
         this.props.requestGetSamplesByFilter(pageNumber, pageSize, query);
     };
     Index.prototype.renderTable = function () {
@@ -87,6 +96,31 @@ var Index = /** @class */ (function (_super) {
                     React.createElement("td", null,
                         React.createElement(react_router_dom_1.Link, { className: "btn-link", to: "/samples/delete/" + sample.sampleID }, "Delete")));
             }))));
+    };
+    Index.prototype.renderPagenation = function (pageSize, pageNumber, totalItems, paginationRange) {
+        var _this = this;
+        var totalPages = (totalItems % pageSize == 0) ? (totalItems / pageSize) : (Math.floor(totalItems / pageSize) + 1);
+        var pages = [];
+        var rangeStart = pageNumber - paginationRange;
+        var rangeEnd = pageNumber + paginationRange;
+        for (var i = rangeStart; i <= rangeEnd; i++) {
+            if (i > 0 && i <= totalPages) {
+                pages.push(i);
+            }
+        }
+        var firstActive = pageNumber === 1;
+        var lastActive = pageNumber === totalPages;
+        return (React.createElement(reactstrap_1.Pagination, { size: "sm", "aria-label": "Page navigation" },
+            React.createElement(reactstrap_1.PaginationItem, { disabled: firstActive },
+                React.createElement(reactstrap_1.PaginationLink, { first: true, onClick: function () { return _this.handlePagination(1); } })),
+            React.createElement(reactstrap_1.PaginationItem, { disabled: firstActive },
+                React.createElement(reactstrap_1.PaginationLink, { previous: true, onClick: function () { return _this.handlePagination(pageNumber - 1); } })),
+            pages.map(function (number) { return React.createElement(reactstrap_1.PaginationItem, { key: number, active: number == pageNumber },
+                React.createElement(reactstrap_1.PaginationLink, { onClick: function () { return _this.handlePagination(number); } }, number)); }),
+            React.createElement(reactstrap_1.PaginationItem, { disabled: lastActive },
+                React.createElement(reactstrap_1.PaginationLink, { next: true, onClick: function () { return _this.handlePagination(pageNumber + 1); } })),
+            React.createElement(reactstrap_1.PaginationItem, { disabled: lastActive },
+                React.createElement(reactstrap_1.PaginationLink, { last: true, onClick: function () { return _this.handlePagination(totalPages); } }))));
     };
     return Index;
 }(React.PureComponent));

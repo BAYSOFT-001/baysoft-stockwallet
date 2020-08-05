@@ -14,7 +14,7 @@ exports.actionCreators = {
             fetch('https://localhost:4101/api/samples' + ("?query=" + _query + "&pageNumber=" + _pageNumber + "&pageSize=" + _pageSize + "&querystrict=true"))
                 .then(function (response) { return response.json(); })
                 .then(function (data) {
-                dispatch({ type: 'RECEIVE_GETSAMPLESBYFILTER_ACTION', pageNumber: pageNumber, pageSize: pageSize, query: query, samples: data.data });
+                dispatch({ type: 'RECEIVE_GETSAMPLESBYFILTER_ACTION', pageNumber: pageNumber, pageSize: pageSize, query: query, resultCount: data.resultCount, samples: data.data });
             });
             dispatch({ type: 'REQUEST_GETSAMPLESBYFILTER_ACTION', pageNumber: pageNumber, pageSize: pageSize, query: query });
         }
@@ -22,7 +22,7 @@ exports.actionCreators = {
 };
 // --------------------
 // REDUCER
-var unloadedState = { samples: [], isLoading: false };
+var unloadedState = { pageSize: 10, pageNumber: 1, resultCount: 0, samples: [], isLoading: false };
 exports.reducer = function (state, incomingAction) {
     if (state === undefined) {
         return unloadedState;
@@ -34,6 +34,7 @@ exports.reducer = function (state, incomingAction) {
                 pageNumber: action.pageNumber,
                 pageSize: action.pageSize,
                 query: action.query,
+                resultCount: state.resultCount,
                 samples: state.samples,
                 isLoading: true
             };
@@ -43,6 +44,7 @@ exports.reducer = function (state, incomingAction) {
                     pageNumber: action.pageNumber,
                     pageSize: action.pageSize,
                     query: action.query,
+                    resultCount: action.resultCount,
                     samples: action.samples,
                     isLoading: false
                 };

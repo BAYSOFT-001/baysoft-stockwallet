@@ -1,7 +1,7 @@
 ﻿import * as React from 'react';
 import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
-import { InputGroup, InputGroupAddon, Button, Input } from 'reactstrap';
+import { InputGroup, InputGroupAddon, Button, Input, Pagination, PaginationItem, PaginationLink } from 'reactstrap';
 import { RouteComponentProps } from 'react-router';
 import { ApplicationState } from '../../../store';
 import * as GetSamplesByFilterState from '../../../store/ActionReducers/Samples';
@@ -13,7 +13,9 @@ type IndexProps =
 
 class Index extends React.PureComponent<IndexProps> {
     state = {
-        txtQuery:  ""
+        query: "",
+        pageNumber: 1,
+        pageSize: 10
     }
 
     public componentDidMount() {
@@ -26,14 +28,19 @@ class Index extends React.PureComponent<IndexProps> {
     //    this.ensureDataFetched();
     //}
 
-    handleQueryChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        this.setState({ txtQuery: e.target.value });
+    handleQueryChange = (text: string) => {
+        this.setState({ query: text });
     }
-    handleSubmitQuery = (e: React.MouseEvent<HTMLButtonElement>) => {
+    handleSubmitQuery = () => {
+        this.ensureDataFetched();
+    }
+    handlePagination = (number: number) => {
+        console.log(number);
+        this.setState({ pageNumber: number });
         this.ensureDataFetched();
     }
     public render() {
-        let { txtQuery } = this.state;
+        let { query } = this.state;
         return (
             <React.Fragment>
                 <div className="row">
@@ -50,9 +57,9 @@ class Index extends React.PureComponent<IndexProps> {
                 <div className="row mb-3">
                     <div className="col">
                         <InputGroup>
-                            <Input value={ txtQuery } onChange={this.handleQueryChange} />
+                            <Input value={query} onChange={(e) => this.handleQueryChange(e.target.value)} />
                             <InputGroupAddon addonType="append">
-                                <Button color="secondary" onClick={this.handleSubmitQuery}>Search!</Button>
+                                <Button color="secondary" onClick={() => this.handleSubmitQuery()}>Search!</Button>
                             </InputGroupAddon>
                         </InputGroup>
                     </div>
@@ -61,6 +68,12 @@ class Index extends React.PureComponent<IndexProps> {
                 <div className="row">
                     <div className="col">
                         {this.renderTable()}
+                    </div>
+                </div>
+
+                <div className="row">
+                    <div className="col">
+                        {this.renderPagenation(this.props.pageSize, this.props.pageNumber, this.props.resultCount, 5)}
                     </div>
                 </div>
 
@@ -76,9 +89,10 @@ class Index extends React.PureComponent<IndexProps> {
     }
 
     private ensureDataFetched() {
-        const pageNumber = 1;
-        const pageSize = 10;
-        const query = this.state.txtQuery;
+        console.log(this.state);
+
+        const { pageNumber, pageSize, query } = this.state;
+
         this.props.requestGetSamplesByFilter(pageNumber, pageSize, query);
     }
 
@@ -104,6 +118,38 @@ class Index extends React.PureComponent<IndexProps> {
                     )}
                 </tbody>
             </table>
+        )
+    }
+    private renderPagenation(pageSize: number, pageNumber: number, totalItems: number, paginationRange: number) {
+        let totalPages = (totalItems % pageSize == 0) ? (totalItems / pageSize) : (Math.floor(totalItems / pageSize) + 1);
+        let pages = [];
+        let rangeStart = pageNumber - paginationRange;
+        let rangeEnd = pageNumber + paginationRange;
+        for (var i = rangeStart; i <= rangeEnd; i++) {
+            if (i > 0 && i <= totalPages) {
+                pages.push(i);
+            }
+        }
+        let firstActive = pageNumber === 1;
+        let lastActive = pageNumber === totalPages;
+        return (
+            <Pagination size="sm" aria-label="Page navigation">
+                <PaginationItem disabled={ firstActive }>
+                    <PaginationLink first onClick={() => this.handlePagination(1)} />
+                </PaginationItem>
+                <PaginationItem disabled={ firstActive }>
+                    <PaginationLink previous onClick={() => this.handlePagination(pageNumber - 1)} />
+                </PaginationItem>
+
+                {pages.map(number => <PaginationItem key={number} active={number == pageNumber}><PaginationLink onClick={()=>this.handlePagination(number)}>{number}</PaginationLink></PaginationItem>)}
+
+                <PaginationItem disabled={ lastActive }>
+                    <PaginationLink next onClick={() => this.handlePagination(pageNumber + 1)} />
+                </PaginationItem>
+                <PaginationItem disabled={ lastActive }>
+                    <PaginationLink last onClick={() => this.handlePagination(totalPages)} />
+                </PaginationItem>
+            </Pagination>
         )
     }
 };

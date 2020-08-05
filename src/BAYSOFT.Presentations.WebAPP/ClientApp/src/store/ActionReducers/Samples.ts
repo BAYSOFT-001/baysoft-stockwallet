@@ -7,13 +7,15 @@ import { AppThunkAction } from '../';
 // STATE
 export interface GetSamplesByFilterState {
     isLoading: boolean;
-    pageNumber?: number;
-    pageSize?: number;
+    pageNumber: number;
+    pageSize: number;
     query?: string;
+    resultCount: number;
     samples: Sample[];
 }
 
 export interface WrapResponse<TEntity> {
+    resultCount: number;
     data: TEntity[];
 }
 
@@ -35,6 +37,7 @@ interface ReceiveGetSamplesByFilterAction {
     pageNumber: number;
     pageSize: number;
     query: string;
+    resultCount: number;
     samples: Sample[];
 }
 
@@ -55,7 +58,7 @@ export const actionCreators = {
             fetch('https://localhost:4101/api/samples' + `?query=${_query}&pageNumber=${_pageNumber}&pageSize=${_pageSize}&querystrict=true`)
                 .then(response => response.json() as Promise<WrapResponse<Sample>>)
                 .then(data => {
-                    dispatch({ type: 'RECEIVE_GETSAMPLESBYFILTER_ACTION', pageNumber: pageNumber, pageSize: pageSize, query: query, samples: data.data });
+                    dispatch({ type: 'RECEIVE_GETSAMPLESBYFILTER_ACTION', pageNumber: pageNumber, pageSize: pageSize, query: query, resultCount: data.resultCount, samples: data.data });
                 });
 
             dispatch({ type: 'REQUEST_GETSAMPLESBYFILTER_ACTION', pageNumber: pageNumber, pageSize: pageSize, query: query });
@@ -65,7 +68,7 @@ export const actionCreators = {
 
 // --------------------
 // REDUCER
-const unloadedState: GetSamplesByFilterState = { samples: [], isLoading: false };
+const unloadedState: GetSamplesByFilterState = { pageSize: 10, pageNumber:1, resultCount: 0, samples: [], isLoading: false };
 
 export const reducer: Reducer<GetSamplesByFilterState> = (state: GetSamplesByFilterState | undefined, incomingAction: Action): GetSamplesByFilterState => {
     if (state === undefined) {
@@ -79,6 +82,7 @@ export const reducer: Reducer<GetSamplesByFilterState> = (state: GetSamplesByFil
                 pageNumber: action.pageNumber,
                 pageSize: action.pageSize,
                 query: action.query,
+                resultCount: state.resultCount,
                 samples: state.samples,
                 isLoading: true
             };
@@ -88,6 +92,7 @@ export const reducer: Reducer<GetSamplesByFilterState> = (state: GetSamplesByFil
                     pageNumber: action.pageNumber,
                     pageSize: action.pageSize,
                     query: action.query,
+                    resultCount: action.resultCount,
                     samples: action.samples,
                     isLoading: false
                 };
