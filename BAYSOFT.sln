@@ -31,9 +31,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BAYSOFT.Core.Middleware", "
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Presentations", "Presentations", "{BDA5186A-57A4-4F49-8F7F-63C35B8AED3C}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BAYSOFT.Presentations.WebAPI", "src\BAYSOFT.Presentations.WebAPI\BAYSOFT.Presentations.WebAPI.csproj", "{47E3FBA8-64AD-47D0-9DDF-4C5978B317EF}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BAYSOFT.Presentations.Web.API.StockWallet", "src\BAYSOFT.Presentations.Web.API.StockWallet\BAYSOFT.Presentations.Web.API.StockWallet.csproj", "{47E3FBA8-64AD-47D0-9DDF-4C5978B317EF}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BAYSOFT.Presentations.WebAPP", "src\BAYSOFT.Presentations.WebAPP\BAYSOFT.Presentations.WebAPP.csproj", "{2DF0E055-1EDA-4227-900B-7876147DC784}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BAYSOFT.Presentations.Web.SPA.StockWallet.ReactTS", "src\BAYSOFT.Presentations.Web.SPA.StockWallet.ReactTS\BAYSOFT.Presentations.Web.SPA.StockWallet.ReactTS.csproj", "{2DF0E055-1EDA-4227-900B-7876147DC784}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
