@@ -35,6 +35,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BAYSOFT.Presentations.Web.A
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BAYSOFT.Presentations.Web.SPA.StockWallet.ReactTS", "src\BAYSOFT.Presentations.Web.SPA.StockWallet.ReactTS\BAYSOFT.Presentations.Web.SPA.StockWallet.ReactTS.csproj", "{2DF0E055-1EDA-4227-900B-7876147DC784}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BAYSOFT.Presentations.Web.SPA.StockWallet.ReactJS", "src\BAYSOFT.Presentations.Web.SPA.StockWallet.ReactJS\BAYSOFT.Presentations.Web.SPA.StockWallet.ReactJS.csproj", "{1464126B-B453-459F-B5D0-512E080BA2EB}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -81,6 +83,10 @@ Global
 		{2DF0E055-1EDA-4227-900B-7876147DC784}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{2DF0E055-1EDA-4227-900B-7876147DC784}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{2DF0E055-1EDA-4227-900B-7876147DC784}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1464126B-B453-459F-B5D0-512E080BA2EB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1464126B-B453-459F-B5D0-512E080BA2EB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1464126B-B453-459F-B5D0-512E080BA2EB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1464126B-B453-459F-B5D0-512E080BA2EB}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -100,6 +106,7 @@ Global
 		{61500D70-30CC-44AE-897C-60AEACA9BCE9} = {6A648C9D-70CD-4415-ADA3-DB0E28573749}
 		{47E3FBA8-64AD-47D0-9DDF-4C5978B317EF} = {BDA5186A-57A4-4F49-8F7F-63C35B8AED3C}
 		{2DF0E055-1EDA-4227-900B-7876147DC784} = {BDA5186A-57A4-4F49-8F7F-63C35B8AED3C}
+		{1464126B-B453-459F-B5D0-512E080BA2EB} = {BDA5186A-57A4-4F49-8F7F-63C35B8AED3C}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {F353D0D2-9B4B-45B6-BAC3-C859546D360D}
