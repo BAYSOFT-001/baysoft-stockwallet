@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.SpaServices.ReactDevelopmentServer;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 
@@ -16,6 +17,10 @@ namespace BAYSOFT.Presentations.Web.SPA.StockWallet.ReactJS
         // For more information on how to configure your application, visit https://go.microsoft.com/fwlink/?LinkID=398940
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddSpaStaticFiles(configuration =>
+            {
+                configuration.RootPath = "client-app/build";
+            });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -26,14 +31,21 @@ namespace BAYSOFT.Presentations.Web.SPA.StockWallet.ReactJS
                 app.UseDeveloperExceptionPage();
             }
 
+            app.UseHttpsRedirection();
+            
+            app.UseStaticFiles();
+            app.UseSpaStaticFiles();
+            
             app.UseRouting();
 
-            app.UseEndpoints(endpoints =>
+            app.UseSpa(configuration =>
             {
-                endpoints.MapGet("/", async context =>
+                configuration.Options.SourcePath = "client-app";
+
+                if (env.IsDevelopment())
                 {
-                    await context.Response.WriteAsync("Hello World!");
-                });
+                    configuration.UseReactDevelopmentServer(npmScript: "start");
+                }
             });
         }
     }
