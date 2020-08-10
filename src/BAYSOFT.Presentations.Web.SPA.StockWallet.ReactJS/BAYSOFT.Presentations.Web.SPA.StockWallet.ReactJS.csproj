@@ -12,8 +12,6 @@
     <Folder Include="client-app\src\assets\material-ui\" />
     <Folder Include="client-app\src\components\atoms\" />
     <Folder Include="client-app\src\components\molecules\" />
-    <Folder Include="client-app\src\components\templates\" />
-    <Folder Include="client-app\src\components\pages\" />
     <Folder Include="client-app\src\components\organisms\" />
     <Folder Include="client-app\src\navigation\" />
     <Folder Include="client-app\src\services\" />
