@@ -116,7 +116,7 @@ function PersistentDrawerLeft(props) {
                         <MenuIcon />
                     </IconButton>
                     <Typography variant="h6" noWrap>
-                        {application.name}
+                        { application.name }
                     </Typography>
                 </Toolbar>
             </AppBar>
@@ -137,7 +137,10 @@ function PersistentDrawerLeft(props) {
                 <Divider />
                 <List>
                     {application.menu.items.map((item, index) => (
-                        <ListItem button key={item.name} onClick={() => props.push(item.route)}>
+                        <ListItem button key={item.name}
+                            selected={item.route == props.pathname}
+                            onClick={() => props.push(item.route)}
+                            disabled={item.isDisabled}>
                             <ListItemIcon>{index % 2 === 0 ? <InboxIcon /> : <MailIcon />}</ListItemIcon>
                             <ListItemText primary={item.name} />
                         </ListItem>
@@ -172,6 +175,7 @@ const {
 
 const mapStateToProps = store => ({
     application: store.applicationState.application,
+    pathname: store.router.location.pathname,
 });
 
 const mapDispatchToProps = dispatch =>

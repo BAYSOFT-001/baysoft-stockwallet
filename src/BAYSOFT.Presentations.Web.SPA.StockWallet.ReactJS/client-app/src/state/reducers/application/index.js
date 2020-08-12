@@ -5,16 +5,19 @@ const INITIAL_STATE = {
         name: "StockWallet",
         menu: {
             title: 'Menu',
-            isOpen: false,
+            isOpen: true,
             items: [{
                 name: 'Home',
-                route: '/'
+                route: '/',
+                isDisabled: false
             }, {
                 name: 'Item 01',
-                route: '/item-01'
+                route: '/item-01',
+                isDisabled: false
             }, {
                 name: 'Item 02',
-                route: '/item-02'
+                route: '/item-02',
+                isDisabled: true
             }]
         }
     }
