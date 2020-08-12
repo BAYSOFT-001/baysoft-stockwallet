@@ -1,15 +1,27 @@
 ﻿// - Import Types
-import { SET_APPLICATION_NAME } from './types';
+import {
+    APPLICATION_NAME_SET,
+    APPLICATION_MENU_OPEN,
+    APPLICATION_MENU_CLOSE
+} from './types';
 
 // - Import Actions
-import { SetApplicationName } from './actions';
+import {
+    SetApplicationName,
+    ApplicationMenuOpen,
+    ApplicationMenuClose
+} from './actions';
 
 const types = {
-    SET_APPLICATION_NAME
+    APPLICATION_NAME_SET,
+    APPLICATION_MENU_OPEN,
+    APPLICATION_MENU_CLOSE
 };
 
 const actions = {
-    SetApplicationName
+    SetApplicationName,
+    ApplicationMenuOpen,
+    ApplicationMenuClose
 };
 
 export {

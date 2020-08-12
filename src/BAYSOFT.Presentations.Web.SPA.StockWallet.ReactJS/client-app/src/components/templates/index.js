@@ -1,5 +1,5 @@
-﻿import MaterialThemplate from './MaterialThemplate';
+﻿import MaterialTemplate from './MaterialTemplate';
 
-export const Themplates = {
-    MaterialThemplate: MaterialThemplate
+export const Templates = {
+    MaterialTemplate: MaterialTemplate
 }

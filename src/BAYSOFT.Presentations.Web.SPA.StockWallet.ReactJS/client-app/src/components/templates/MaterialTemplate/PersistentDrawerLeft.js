@@ -1,5 +1,10 @@
 ﻿import React from 'react';
-import { useSelector } from 'react-redux';
+import { connect, useSelector } from 'react-redux';
+import { bindActionCreators } from 'redux';
+
+import { push } from 'connected-react-router'
+
+import { ApplicationActionTypes, ApplicationActionType } from '../../../state/actions';
 
 import clsx from 'clsx';
 import { makeStyles, useTheme } from '@material-ui/core/styles';
@@ -78,19 +83,17 @@ const useStyles = makeStyles((theme) => ({
         marginLeft: 0,
     },
 }));
-
-export default function PersistentDrawerLeft(props) {
+function PersistentDrawerLeft(props) {
     const classes = useStyles();
     const theme = useTheme();
-    const [open, setOpen] = React.useState(false);
     const application = useSelector(state => state.applicationState.application);
 
     const handleDrawerOpen = () => {
-        setOpen(true);
+        props.ApplicationMenuOpen();
     };
 
     const handleDrawerClose = () => {
-        setOpen(false);
+        props.ApplicationMenuClose();
     };
 
     return (
@@ -99,7 +102,7 @@ export default function PersistentDrawerLeft(props) {
             <AppBar
                 position="fixed"
                 className={clsx(classes.appBar, {
-                    [classes.appBarShift]: open,
+                    [classes.appBarShift]: application.menu.isOpen,
                 })}
             >
                 <Toolbar>
@@ -108,12 +111,12 @@ export default function PersistentDrawerLeft(props) {
                         aria-label="open drawer"
                         onClick={handleDrawerOpen}
                         edge="start"
-                        className={clsx(classes.menuButton, open && classes.hide)}
+                        className={clsx(classes.menuButton, application.menu.isOpen && classes.hide)}
                     >
                         <MenuIcon />
                     </IconButton>
                     <Typography variant="h6" noWrap>
-                        { application.name }
+                        {application.name}
                     </Typography>
                 </Toolbar>
             </AppBar>
@@ -121,7 +124,7 @@ export default function PersistentDrawerLeft(props) {
                 className={classes.drawer}
                 variant="persistent"
                 anchor="left"
-                open={open}
+                open={application.menu.isOpen}
                 classes={{
                     paper: classes.drawerPaper,
                 }}
@@ -133,10 +136,10 @@ export default function PersistentDrawerLeft(props) {
                 </div>
                 <Divider />
                 <List>
-                    {['Inbox', 'Starred', 'Send email', 'Drafts'].map((text, index) => (
-                        <ListItem button key={text}>
+                    {application.menu.items.map((item, index) => (
+                        <ListItem button key={item.name} onClick={() => props.push(item.route)}>
                             <ListItemIcon>{index % 2 === 0 ? <InboxIcon /> : <MailIcon />}</ListItemIcon>
-                            <ListItemText primary={text} />
+                            <ListItemText primary={item.name} />
                         </ListItem>
                     ))}
                 </List>
@@ -152,12 +155,30 @@ export default function PersistentDrawerLeft(props) {
             </Drawer>
             <main
                 className={clsx(classes.content, {
-                    [classes.contentShift]: open,
+                    [classes.contentShift]: application.menu.isOpen,
                 })}
             >
                 <div className={classes.drawerHeader} />
-                { props.children }
+                {props.children}
             </main>
         </div>
     );
 }
+
+const {
+    ApplicationMenuOpen,
+    ApplicationMenuClose
+} = ApplicationActionType.actions;
+
+const mapStateToProps = store => ({
+    application: store.applicationState.application,
+});
+
+const mapDispatchToProps = dispatch =>
+    bindActionCreators({
+        ApplicationMenuOpen,
+        ApplicationMenuClose,
+        push
+    }, dispatch);
+
+export default connect(mapStateToProps, mapDispatchToProps)(PersistentDrawerLeft);
