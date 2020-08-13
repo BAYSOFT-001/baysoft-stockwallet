@@ -1,7 +1,10 @@
-﻿import Index from './home/index';
+﻿import HomeModule from './home';
+import SamplesModule from './samples';
+
+import NotFoundPage from './NotFoundPage';
 
 export const Pages = {
-    Home: {
-        Index: Index
-    }
+    Home: HomeModule,
+    Samples: SamplesModule,
+    NotFound: NotFoundPage
 }

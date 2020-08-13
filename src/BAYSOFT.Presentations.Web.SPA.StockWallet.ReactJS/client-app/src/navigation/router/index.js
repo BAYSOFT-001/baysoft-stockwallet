@@ -1,7 +1,8 @@
 ﻿import React, { Component } from 'react';
 
+import { ConnectedRouter } from 'connected-react-router';
+
 import {
-    BrowserRouter,
     Route,
     Switch,
 } from "react-router-dom";
@@ -11,10 +12,11 @@ import ROUTES from '../routes';
 class Router extends Component {
     render() {
         return (
-            <BrowserRouter>
+            <ConnectedRouter history={this.props.history}>
                 <Switch>
                     {ROUTES.map((route, index) =>
-                        <Route exact
+                        <Route
+                            exact={true}
                             key={index}
                             name={route.name}
                             path={route.path}
@@ -24,7 +26,7 @@ class Router extends Component {
                     )
                     }
                 </Switch>
-            </BrowserRouter>
+            </ConnectedRouter>
         );
     }
 }

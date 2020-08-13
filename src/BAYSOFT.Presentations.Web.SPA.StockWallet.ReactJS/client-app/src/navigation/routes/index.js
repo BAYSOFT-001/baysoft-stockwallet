@@ -2,18 +2,16 @@
     Pages,
 } from '../../components/pages';
 
-const DEFAULT_ROUTE = { private: false, name: "DEFAULT", path: "/", params: [], component: Pages.Home.Index }
-const HOME_ROUTE = { private: false, name: "HOME", path: "/home", params: [], component: Pages.Home.Index }
-//const SIGNIN_ROUTE = { private: false, name: "SIGNIN", path: "/signin", params: [], component: SignInScreen }
-//const OTHER_ROUTE = { private: false, name: "OTHER", path: "/other/:id", params: ['id'], component: OtherScreen }
-//const NOTFOUND_ROUTE = { private: false, name: 'NOTFOUND', path: '/*', params: [], component: ErrorScreen }
+const DEFAULT_ROUTE = { private: false, name: "DEFAULT", path: "/", params: [], component: Pages.Home.pages.Index }
+const NOTFOUND_ROUTE = { private: false, name: 'NOTFOUND', path: '/*', params: [], component: Pages.NotFound }
 
 const ROUTES = [
     DEFAULT_ROUTE,
-    HOME_ROUTE,
+    ...Pages.Home.routes,
+    ...Pages.Samples.routes,
     //OTHER_ROUTE,
     //SIGNIN_ROUTE,
-    //NOTFOUND_ROUTE,
+    NOTFOUND_ROUTE,
 ];
 
 export default ROUTES;

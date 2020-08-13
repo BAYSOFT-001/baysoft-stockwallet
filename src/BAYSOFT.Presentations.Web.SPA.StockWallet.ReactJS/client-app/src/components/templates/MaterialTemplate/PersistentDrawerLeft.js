@@ -4,10 +4,12 @@ import { bindActionCreators } from 'redux';
 
 import { push } from 'connected-react-router'
 
-import { ApplicationActionTypes, ApplicationActionType } from '../../../state/actions';
+import { ApplicationActionType } from '../../../state/actions';
 
 import clsx from 'clsx';
 import { makeStyles, useTheme } from '@material-ui/core/styles';
+import Breadcrumbs from '@material-ui/core/Breadcrumbs';
+import Link from '@material-ui/core/Link';
 import Drawer from '@material-ui/core/Drawer';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import AppBar from '@material-ui/core/AppBar';
@@ -83,6 +85,28 @@ const useStyles = makeStyles((theme) => ({
         marginLeft: 0,
     },
 }));
+
+function handleClick(event) {
+    event.preventDefault();
+    console.info('You clicked a breadcrumb.');
+}
+
+function breadcrumbs(items) {
+    return (
+        <Breadcrumbs aria-label="breadcrumb">
+            {
+                items.map((item, index) => {
+                    console.log(index);
+                    if (index == items.length) {
+                        return (<Typography key={index} color="textPrimary">{items.title}</Typography>);
+                    } else {
+                        return (<Link key={index} color="inherit" href="/" onClick={handleClick}>{item.title}</Link>);
+                    }
+                })
+            }            
+        </Breadcrumbs>
+    );
+}
 function PersistentDrawerLeft(props) {
     const classes = useStyles();
     const theme = useTheme();
@@ -139,7 +163,7 @@ function PersistentDrawerLeft(props) {
                     {application.menu.items.map((item, index) => (
                         <ListItem button key={item.name}
                             selected={item.route == props.pathname}
-                            onClick={() => props.push(item.route)}
+                            onClick={() => props.push(item.route) }
                             disabled={item.isDisabled}>
                             <ListItemIcon>{index % 2 === 0 ? <InboxIcon /> : <MailIcon />}</ListItemIcon>
                             <ListItemText primary={item.name} />
@@ -162,6 +186,9 @@ function PersistentDrawerLeft(props) {
                 })}
             >
                 <div className={classes.drawerHeader} />
+
+                {breadcrumbs([{ title: 'Home' }, {title:'Index'}])}
+
                 {props.children}
             </main>
         </div>

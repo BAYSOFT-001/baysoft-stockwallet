@@ -11,6 +11,10 @@ const INITIAL_STATE = {
                 route: '/',
                 isDisabled: false
             }, {
+                name: 'Samples',
+                route: '/samples',
+                isDisabled: false
+            }, {
                 name: 'Item 01',
                 route: '/item-01',
                 isDisabled: false
