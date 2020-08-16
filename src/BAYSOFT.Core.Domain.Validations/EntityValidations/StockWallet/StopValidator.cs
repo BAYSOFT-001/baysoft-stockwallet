@@ -11,6 +11,7 @@ namespace BAYSOFT.Core.Domain.Validations.EntityValidationsStockWallet
     {
         public StopValidator()
         {
+            RuleFor(x => x.ExclusionDate).NotEmpty().WithMessage("{0} cannot be empty!");
         }
     }
 }

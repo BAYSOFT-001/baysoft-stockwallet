@@ -91,22 +91,6 @@ function handleClick(event) {
     console.info('You clicked a breadcrumb.');
 }
 
-function breadcrumbs(items) {
-    return (
-        <Breadcrumbs aria-label="breadcrumb">
-            {
-                items.map((item, index) => {
-                    console.log(index);
-                    if (index == items.length) {
-                        return (<Typography key={index} color="textPrimary">{items.title}</Typography>);
-                    } else {
-                        return (<Link key={index} color="inherit" href="/" onClick={handleClick}>{item.title}</Link>);
-                    }
-                })
-            }            
-        </Breadcrumbs>
-    );
-}
 function PersistentDrawerLeft(props) {
     const classes = useStyles();
     const theme = useTheme();
@@ -119,7 +103,6 @@ function PersistentDrawerLeft(props) {
     const handleDrawerClose = () => {
         props.ApplicationMenuClose();
     };
-
     return (
         <div className={classes.root}>
             <CssBaseline />
@@ -186,8 +169,6 @@ function PersistentDrawerLeft(props) {
                 })}
             >
                 <div className={classes.drawerHeader} />
-
-                {breadcrumbs([{ title: 'Home' }, {title:'Index'}])}
 
                 {props.children}
             </main>

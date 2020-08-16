@@ -23,8 +23,7 @@ class Router extends Component {
                             params={route.params}
                             component={route.component}
                         />
-                    )
-                    }
+                    )}
                 </Switch>
             </ConnectedRouter>
         );

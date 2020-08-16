@@ -3,12 +3,13 @@ import { connect } from 'react-redux';
 
 import { Templates } from '../templates';
 
+import { Typography } from '@material-ui/core';
+
 class NotFoundPage extends Component {
     render() {
         return (
             <Templates.MaterialTemplate.DashboardLayout>
-                <h4>Not found!</h4>
-                <hr/>
+                <Typography variant="h6" noWrap>Not found!</Typography>
             </Templates.MaterialTemplate.DashboardLayout>
         );
     }
