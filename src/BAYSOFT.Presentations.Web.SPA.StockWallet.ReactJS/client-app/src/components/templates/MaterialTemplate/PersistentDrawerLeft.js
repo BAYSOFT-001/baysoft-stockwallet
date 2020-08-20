@@ -2,7 +2,7 @@
 import { connect, useSelector } from 'react-redux';
 import { bindActionCreators } from 'redux';
 
-import { push } from 'connected-react-router'
+import { push } from 'connected-react-router';
 
 import { ApplicationActionType } from '../../../state/actions';
 

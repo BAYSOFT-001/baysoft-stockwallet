@@ -1,9 +1,8 @@
-﻿import React, { Component, useEffect } from 'react';
+﻿import React, { useEffect } from 'react';
 import { connect } from 'react-redux';
 import clsx from 'clsx';
 import {
     lighten,
-    withStyles,
     makeStyles,
     Paper,
     Toolbar,
@@ -65,6 +64,9 @@ const useStyles = makeStyles(theme => ({
             },
     toolbarTitle: {
         flex: '1 1 100%',
+    },
+    tableHeadRoot: {
+        fontWeight: 'bold' 
     }
 }));
 
@@ -90,7 +92,7 @@ const createContext = (config) => {
                 },
                 responseProperties: []
             },
-            data: [],
+            data: []
         },
         selected: [],
         endpoint: config.endpoint,
@@ -114,7 +116,10 @@ const ApiConnectedTable = props => {
         fetch(endpoint)
             .then(response => response.json())
             .then(data => {
-                setContext({ ...context, response: data });
+                setContext({
+                    ...context,
+                    response: data
+                });
             });
     };
     const handleRequestSort = (property) => (event) => {
@@ -194,10 +199,14 @@ const ApiConnectedTable = props => {
         return config.actions !== undefined && config.actions[action] !== undefined;
     }
     useEffect(() => {
-        setContext({ ...context, filterQuery: context.generateEndpoit(context) });
+        if (context) {
+            setContext({ ...context, filterQuery: context.generateEndpoit(context) });
+        }
     }, [context.response.request]);
     useEffect(() => {
-        loadData(context.filterQuery);
+        if (context) {
+            loadData(context.filterQuery);
+        }
     }, [context.filterQuery]);
     return (
         <div className={classes.mainRoot}>
@@ -254,7 +263,7 @@ const ApiConnectedTable = props => {
                         size={config.dense ? 'small' : 'medium'}
                         aria-label="api table"
                     >
-                        <TableHead>
+                        <TableHead className={classes.tableHeadRoot}>
                             <TableRow>
                                 <TableCell padding="checkbox">
                                     <Checkbox
@@ -273,6 +282,7 @@ const ApiConnectedTable = props => {
                                             sortDirection={context.response.request.ordenation.orderBy === column.id ? context.response.request.ordenation.order === 'ascending' ? 'asc' : 'desc' : false}
                                         >
                                             <TableSortLabel
+                                                style={{ fontWeight: 'bold' }}
                                                 active={context.response.request.ordenation.orderBy === column.id}
                                                 direction={context.response.request.ordenation.orderBy === column.id ? context.response.request.ordenation.order === 'ascending' ? 'asc' : 'desc' : 'asc'}
                                                 onClick={handleRequestSort(column.id)}

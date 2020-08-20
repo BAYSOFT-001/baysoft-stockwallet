@@ -1,43 +1,54 @@
-﻿import React, { Component } from 'react';
+﻿import React from 'react';
+import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
+
+import { push } from 'connected-react-router';
 
 import { Templates } from '../../templates';
 
 import ApiConnectedTable from '../../organisms/ApiConnectedTable';
 
-const config = {
-    title: 'List of samples',
-    endpoint: 'https://localhost:4101/api/samples',
-    id: 'sampleID',
-    dense: false,
-    columns: [{
-        id: 'description',
-        isNumeric: false,
-        disablePadding: false,
-        label: 'Description'
-    }],
-    actions: {
-        'add': { handler: () => { console.log('click: addHandler'); } },
-        'edit': { handler: (id) => { console.log('click: editHandler'); } },
-        'delete': { handler: (ids) => { console.log('click: deleteHandler'); } }
-    }
-};
+const IndexPage = (props) => {
+    const config = {
+        title: 'List of samples',
+        endpoint: 'https://localhost:4101/api/samples',
+        id: 'sampleID',
+        dense: false,
+        columns: [{
+            id: 'description',
+            isNumeric: false,
+            disablePadding: false,
+            label: 'Description'
+        }],
+        actions: {
+            'add': { handler: () => { redirectToAdd(); } },
+            'edit': { handler: (id) => { console.log('click: editHandler'); } },
+            'delete': { handler: (ids) => { console.log('click: deleteHandler'); } }
+        }
+    };
 
-class IndexPage extends Component {
-    render() {
-        return (
-            <Templates.MaterialTemplate.DashboardLayout>
-                <ApiConnectedTable config={config} />
-            </Templates.MaterialTemplate.DashboardLayout>
-        );
-    }
+    const redirectToAdd = () => {
+        console.log(props.push);
+        props.push('/samples/create');
+    };
+
+    return (
+        <Templates.MaterialTemplate.DashboardLayout>
+            <ApiConnectedTable config={config} />
+        </Templates.MaterialTemplate.DashboardLayout>
+    );
 }
 
 const mapStateToProps = store => ({
     application: store.applicationState.application
 });
 
-const connectedComponent = connect(mapStateToProps)(IndexPage);
+const mapDispatchToProps = dispatch =>
+    bindActionCreators({
+        push
+    }, dispatch);
+
+const connectedComponent = connect(mapStateToProps, mapDispatchToProps)(IndexPage);
 
 export const routes = [
     { private: false, name: "SAMPLES", path: "/samples", params: [], component: connectedComponent },
