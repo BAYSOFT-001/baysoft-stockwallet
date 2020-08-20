@@ -23,7 +23,8 @@ import {
 import {
     Delete,
     Edit,
-    FilterList
+    FilterList,
+    Add
 } from '@material-ui/icons';
 
 const useStyles = makeStyles(theme => ({
@@ -67,82 +68,136 @@ const useStyles = makeStyles(theme => ({
     }
 }));
 
-const config = {
-    title: 'List of samples',
-    endpoint: 'https://localhost:4101/api/samples?pagesize=5',
-    id: 'sampleID',
-    dense: false,
-    columns: [{
-        id: 'description',
-        isNumeric: false,
-        disablePadding: false,
-        label: 'Description'
-    }]
-};
-
-const tableContext = {
-    filterQuery: '',
-    response: {
-        statusCode: 0,
-        internalCode: 0,
-        resultCount: 0,
-        message: '',
-        request: {
-            route: {},
-            searchProperties: {
-                query: '',
-                strict: false,
-                phrase: false
+const createContext = (config) => {
+    return {
+        filterQuery: '',
+        response: {
+            statusCode: 0,
+            internalCode: 0,
+            resultCount: 0,
+            message: '',
+            request: {
+                route: {},
+                searchProperties: {
+                    query: '',
+                    strict: false,
+                    phrase: false
+                },
+                ordenation: {},
+                pagination: {
+                    size: 5,
+                    number: 1
+                },
+                responseProperties: []
             },
-            ordenation: {},
-            pagination: {
-                size: 5,
-                number: 1
-            },
-            responseProperties: []
+            data: [],
         },
-        data: [],
-    },
-    selected: [],
-    rowCount: 0
+        selected: [],
+        endpoint: config.endpoint,
+        parameters: [],
+        generateEndpoit: (context) => {
+            let pageSize = `pagesize=${context.response.request.pagination.size}`;
+            let pageNumber = `pagenumber=${context.response.request.pagination.number}`;
+            return context.endpoint + '?' + pageSize + '&' + pageNumber;
+        }
+    }
 };
-
-
 
 const ApiConnectedTable = props => {
+    const { config } = props;
+    const tableContext = createContext(config);
     const classes = useStyles();
     const [context, setContext] = React.useState(tableContext);
     const emptyRows = context.response.request.pagination.size - context.response.data.length;
-    const loadData = () => {
-        fetch(config.endpoint)
+    const loadData = (endpoint) => {
+        console.log(endpoint);
+        fetch(endpoint)
             .then(response => response.json())
             .then(data => {
                 setContext({ ...context, response: data });
             });
     };
     const handleRequestSort = (property) => (event) => {
-        //const isAsc = orderBy === property && order === 'asc';
-        //setOrder(isAsc ? 'desc' : 'asc');
-        //setOrderBy(property);
+        console.log('click: handleRequestSort');
     };
     const handleSelectAllClick = (event) => {
-        //if (event.target.checked) {
-        //    const newSelecteds = rows.map((n) => n.name);
-        //    setSelected(newSelecteds);
-        //    return;
-        //}
-        //setSelected([]);
+        if (event.target.checked) {
+            const newSelecteds = context.response.data.map((value) => value[config.id]);
+            console.log(newSelecteds);
+            setContext({ ...context, selected: newSelecteds });
+            return;
+        }
+        setContext({ ...context, selected: [] });
+    };
+    const handleClick = (event, id) => {
+        const selectedIndex = context.selected.indexOf(id);
+        let newSelected = [];
+
+        if (selectedIndex === -1) {
+            newSelected = newSelected.concat(context.selected, id);
+        } else if (selectedIndex === 0) {
+            newSelected = newSelected.concat(context.selected.slice(1));
+        } else if (selectedIndex === context.selected.length - 1) {
+            newSelected = newSelected.concat(context.selected.slice(0, -1));
+        } else if (selectedIndex > 0) {
+            newSelected = newSelected.concat(
+                context.selected.slice(0, selectedIndex),
+                context.selected.slice(selectedIndex + 1),
+            );
+        }
+        setContext({ ...context, selected: newSelected });
     };
     const handleChangePage = (event, newPage) => {
-        //setPage(newPage);
+        console.log(newPage);
+        setContext({
+            ...context,
+            response: {
+                ...context.response,
+                request: {
+                    ...context.response.request,
+                    pagination: {
+                        ...context.response.request.pagination,
+                        number: newPage+1
+                    }
+                }
+            }
+        });
     };
-
     const handleChangeRowsPerPage = (event) => {
-        //setRowsPerPage(parseInt(event.target.value, 10));
-        //setPage(0);
+        setContext({
+            ...context,
+            response: {
+                ...context.response,
+                request: {
+                    ...context.response.request,
+                    pagination: {
+                        size: event.target.value,
+                        number: 1
+                    }
+                }
+            }
+        });
     };
+    const handleClickAdd = (event) => {
+        config.actions['add'].handler();
+    };
+    const handleClickFilter = (event) => {
+        console.log('click: handleClickFilter');
+    };
+    const handleClickEdit = (event) => {
+        config.actions['edit'].handler();
+    };
+    const handleClickDelete = (event) => {
+        config.actions['delete'].handler();
+    };
+    const allowAction = (action) => {
+        return config.actions !== undefined && config.actions[action] !== undefined;
+    }
     useEffect(() => {
-        loadData();
+        setContext({ ...context, filterQuery: context.generateEndpoit(context) });
+    }, [context.response.request]);
+    useEffect(() => {
+        loadData(context.filterQuery);
     }, [context.filterQuery]);
     return (
         <div className={classes.mainRoot}>
@@ -162,26 +217,34 @@ const ApiConnectedTable = props => {
                             </Typography>
                         )}
 
-                    {context.selected.length > 0 && context.selected.length === 1 ? (
+                    {allowAction('edit') && context.selected.length > 0 && context.selected.length === 1 ? (
                         <Tooltip title="Editar">
-                            <IconButton aria-label="edit">
+                            <IconButton aria-label="edit" onClick={handleClickEdit}>
                                 <Edit />
                             </IconButton>
                         </Tooltip>) : (null)
                     }
 
-                    {context.selected.length > 0 ? (
+                    {allowAction('delete') && context.selected.length > 0 ? (
                         <Tooltip title="Excluir">
-                            <IconButton aria-label="delete">
+                            <IconButton aria-label="delete" onClick={handleClickDelete}>
                                 <Delete />
                             </IconButton>
                         </Tooltip>
                     ) : (
-                            <Tooltip title="Filter list">
-                                <IconButton aria-label="filter list">
-                                    <FilterList />
-                                </IconButton>
-                            </Tooltip>
+                            <React.Fragment>
+                                {allowAction('add') ? (
+                                    <Tooltip title="Add item">
+                                        <IconButton aria-label="add item" onClick={handleClickAdd}>
+                                            <Add />
+                                        </IconButton>
+                                    </Tooltip>) : null}
+                                <Tooltip title="Filter list">
+                                    <IconButton aria-label="filter list" onClick={handleClickFilter}>
+                                        <FilterList />
+                                    </IconButton>
+                                </Tooltip>
+                            </React.Fragment>
                         )}
                 </Toolbar>
                 <TableContainer>
@@ -195,8 +258,8 @@ const ApiConnectedTable = props => {
                             <TableRow>
                                 <TableCell padding="checkbox">
                                     <Checkbox
-                                        indeterminate={context.selected.length > 0 && context.selected.length < context.rowCount}
-                                        checked={context.rowCount > 0 && context.selected.length === context.rowCount}
+                                        indeterminate={context.selected.length > 0 && context.selected.length < context.response.data.length}
+                                        checked={context.response.data.length > 0 && context.selected.length === context.response.data.length}
                                         onChange={handleSelectAllClick}
                                         inputProps={{ 'aria-label': 'select all desserts' }}
                                     />
@@ -232,6 +295,7 @@ const ApiConnectedTable = props => {
                                 return (
                                     <TableRow
                                         hover
+                                        onClick={(event) => handleClick(event, value[config.id])}
                                         role="checkbox"
                                         aria-checked={isItemSelected}
                                         tabIndex={-1}

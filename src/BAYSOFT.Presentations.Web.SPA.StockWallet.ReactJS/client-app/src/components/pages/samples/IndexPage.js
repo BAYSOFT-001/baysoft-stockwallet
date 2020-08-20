@@ -7,13 +7,29 @@ import EnchancedTable from '../../molecules/EnhancedTable';
 
 import ApiConnectedTable from '../../organisms/ApiConnectedTable';
 
+const config = {
+    title: 'List of samples',
+    endpoint: 'https://localhost:4101/api/samples',
+    id: 'sampleID',
+    dense: false,
+    columns: [{
+        id: 'description',
+        isNumeric: false,
+        disablePadding: false,
+        label: 'Description'
+    }],
+    actions: {
+        'add': { handler: () => { console.log('click: addHandler'); } },
+        'edit': { handler: (id) => { console.log('click: editHandler'); } },
+        'delete': { handler: (ids) => { console.log('click: deleteHandler'); } }
+    }
+};
+
 class IndexPage extends Component {
     render() {
         return (
             <Templates.MaterialTemplate.DashboardLayout>
-                <ApiConnectedTable endpoint={'https://localhost:4101/api/samples'}/>
-                <hr/>
-                <EnchancedTable/>
+                <ApiConnectedTable config={config} />
             </Templates.MaterialTemplate.DashboardLayout>
         );
     }
