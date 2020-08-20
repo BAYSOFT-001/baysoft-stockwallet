@@ -3,8 +3,6 @@ import { connect } from 'react-redux';
 
 import { Templates } from '../../templates';
 
-import EnchancedTable from '../../molecules/EnhancedTable';
-
 import ApiConnectedTable from '../../organisms/ApiConnectedTable';
 
 const config = {
