@@ -199,13 +199,13 @@ EnhancedTableToolbar.propTypes = {
     numSelected: PropTypes.number.isRequired,
 };
 
-const TableRowStriped = withStyles((theme) => ({
-    root: {
-        '&:nth-of-type(odd)': {
-            backgroundColor: theme.palette.action.hover,
-        },
-    },
-}))(TableRow);
+//const TableRowStriped = withStyles((theme) => ({
+//    root: {
+//        '&:nth-of-type(odd)': {
+//            backgroundColor: theme.palette.action.hover,
+//        },
+//    },
+//}))(TableRow);
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -320,7 +320,7 @@ function EnhancedTable() {
                                     const labelId = `enhanced-table-checkbox-${index}`;
 
                                     return (
-                                        <TableRowStriped
+                                        <TableRow
                                             hover
                                             onClick={(event) => handleClick(event, row.name)}
                                             role="checkbox"
@@ -342,7 +342,7 @@ function EnhancedTable() {
                                             <TableCell align="right">{row.fat}</TableCell>
                                             <TableCell align="right">{row.carbs}</TableCell>
                                             <TableCell align="right">{row.protein}</TableCell>
-                                        </TableRowStriped>
+                                        </TableRow>
                                     );
                                 })}
                             {emptyRows > 0 && (

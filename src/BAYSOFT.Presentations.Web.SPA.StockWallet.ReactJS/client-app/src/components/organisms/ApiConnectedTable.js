@@ -26,14 +26,6 @@ import {
     FilterList
 } from '@material-ui/icons';
 
-const TableRowStriped = withStyles((theme) => ({
-    root: {
-        '&:nth-of-type(odd)': {
-            backgroundColor: theme.palette.action.hover,
-        },
-    },
-}))(TableRow);
-
 const useStyles = makeStyles(theme => ({
     mainRoot: {
         width: '100%',
@@ -238,7 +230,7 @@ const ApiConnectedTable = props => {
                                 const isItemSelected = context.selected.indexOf(value[config.id]) !== -1;
                                 const labelId = `enhanced-table-checkbox-${index}`;
                                 return (
-                                    <TableRowStriped
+                                    <TableRow
                                         hover
                                         role="checkbox"
                                         aria-checked={isItemSelected}
@@ -257,7 +249,7 @@ const ApiConnectedTable = props => {
                                             return (<TableCell key={cellId} align={column.isNumeric ? 'right' : 'left'}>{value[column.id]}</TableCell>)
                                         })}
 
-                                    </TableRowStriped>
+                                    </TableRow>
                                 )
                             }) : null}
                             {emptyRows > 0 && (
