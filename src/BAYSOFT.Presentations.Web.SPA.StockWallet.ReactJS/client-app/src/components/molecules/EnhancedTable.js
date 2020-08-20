@@ -170,7 +170,7 @@ const EnhancedTableToolbar = (props) => {
                     </Typography>
                 )}
 
-            {numSelected > 0 && numSelected == 1 ? (
+            {numSelected > 0 && numSelected === 1 ? (
                 <Tooltip title="Editar">
                     <IconButton aria-label="edit">
                         <EditIcon />

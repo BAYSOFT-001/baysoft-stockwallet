@@ -8,8 +8,6 @@ import { ApplicationActionType } from '../../../state/actions';
 
 import clsx from 'clsx';
 import { makeStyles, useTheme } from '@material-ui/core/styles';
-import Breadcrumbs from '@material-ui/core/Breadcrumbs';
-import Link from '@material-ui/core/Link';
 import Drawer from '@material-ui/core/Drawer';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import AppBar from '@material-ui/core/AppBar';
@@ -86,11 +84,6 @@ const useStyles = makeStyles((theme) => ({
     },
 }));
 
-function handleClick(event) {
-    event.preventDefault();
-    console.info('You clicked a breadcrumb.');
-}
-
 function PersistentDrawerLeft(props) {
     const classes = useStyles();
     const theme = useTheme();
@@ -145,7 +138,7 @@ function PersistentDrawerLeft(props) {
                 <List>
                     {application.menu.items.map((item, index) => (
                         <ListItem button key={item.name}
-                            selected={item.route == props.pathname}
+                            selected={item.route === props.pathname}
                             onClick={() => props.push(item.route) }
                             disabled={item.isDisabled}>
                             <ListItemIcon>{index % 2 === 0 ? <InboxIcon /> : <MailIcon />}</ListItemIcon>
