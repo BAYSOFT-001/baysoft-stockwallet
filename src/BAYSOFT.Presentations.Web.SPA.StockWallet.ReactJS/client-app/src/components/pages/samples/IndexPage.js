@@ -22,14 +22,16 @@ const IndexPage = (props) => {
         }],
         actions: {
             'add': { handler: () => { redirectToAdd(); } },
-            'edit': { handler: (id) => { console.log('click: editHandler'); } },
+            'edit': { handler: (id) => { redirectToEdit(id); } },
             'delete': { handler: (ids) => { console.log('click: deleteHandler'); } }
         }
     };
 
     const redirectToAdd = () => {
-        console.log(props.push);
         props.push('/samples/create');
+    };
+    const redirectToEdit = (id) => {
+        props.push(`/samples/edit/${id}`);
     };
 
     return (

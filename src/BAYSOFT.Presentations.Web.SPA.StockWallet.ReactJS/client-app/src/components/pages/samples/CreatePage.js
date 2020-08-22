@@ -1,4 +1,4 @@
-﻿import React from 'react';
+﻿import React, { useState } from 'react';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 
@@ -12,7 +12,11 @@ import {
     Toolbar,
     Typography,
     Tooltip,
-    IconButton
+    IconButton,
+    FormControl,
+    TextField,
+    Button,
+    Grid
 } from '@material-ui/core';
 
 import {
@@ -21,6 +25,7 @@ import {
 
 const useStyles = makeStyles(theme => ({
     mainPaper: {
+        minWidth: '300px',
         width: '100%',
         marginBottom: theme.spacing(2),
     },
@@ -30,14 +35,26 @@ const useStyles = makeStyles(theme => ({
     },
     toolbarTitle: {
         flex: '1 1 100%',
-    }
+    },
+    formRoot: {
+        display: 'flex',
+        flexWrap: 'wrap',
+    },
+    formMargin: {
+        padding: theme.spacing(1),
+    },
 }));
 
 const CreatePage = (props) => {
     const classes = useStyles();
+    const [sample, setSample] = useState({ description: '' });
 
     const handleClickBack = (event) => {
         props.push('/samples');
+    };
+
+    const handleChange = (prop) => (event) => {
+        setSample({ ...sample, [prop]: event.target.value });
     };
 
     return (
@@ -46,20 +63,36 @@ const CreatePage = (props) => {
                 <Toolbar
                     className={classes.toolbarRoot}
                 >
-                    <Typography className={classes.toolbarTitle} variant="h6" id="tableTitle" component="div">
-                        Create new sample
-                    </Typography>
-
                     <Tooltip title="Voltar">
                         <IconButton aria-label="back" onClick={handleClickBack}>
                             <KeyboardBackspace />
                         </IconButton>
                     </Tooltip>
+
+                    <Typography className={classes.toolbarTitle} variant="h6" id="tableTitle" component="div">
+                        Create new sample
+                    </Typography>
                 </Toolbar>
+                <Grid container spacing={0} className={classes.formRoot}>
+                    <Grid container spacing={0} >
+                        <Grid item xs={12}>
+                            <FormControl fullWidth className={classes.formMargin} >
+                                <TextField id="outlined-basic" label="Description" variant="outlined" value={sample.description} onChange={handleChange('description')} />
+                            </FormControl>
+                        </Grid>
+                    </Grid>
+                    <Grid container spacing={0} justify="flex-end" >
+                        <Grid item lg={2} md={4} xs={6}>
+                            <FormControl fullWidth className={classes.formMargin} >
+                                <Button variant="contained" color="primary" href="#contained-buttons">Save</Button>
+                            </FormControl>
+                        </Grid>
+                    </Grid>
+                </Grid>
             </Paper>
         </Templates.MaterialTemplate.DashboardLayout>
     );
-}
+};
 
 const mapStateToProps = store => ({
     application: store.applicationState.application

@@ -3,12 +3,14 @@ import { connect } from 'react-redux';
 import clsx from 'clsx';
 import {
     lighten,
+    fade,
     makeStyles,
     Paper,
     Toolbar,
     Tooltip,
     Typography,
-    IconButton,    TableContainer,
+    IconButton,
+    TableContainer,
     Table,
     TableHead,
     TableRow,
@@ -16,14 +18,16 @@ import {
     Checkbox,
     TableSortLabel,
     TableBody,
-    TablePagination
+    TablePagination,
+    InputBase
 } from '@material-ui/core';
 
 import {
     Delete,
     Edit,
     FilterList,
-    Add
+    Add,
+    Search
 } from '@material-ui/icons';
 
 const useStyles = makeStyles(theme => ({
@@ -66,8 +70,45 @@ const useStyles = makeStyles(theme => ({
         flex: '1 1 100%',
     },
     tableHeadRoot: {
-        fontWeight: 'bold' 
-    }
+        fontWeight: 'bold'
+    },
+    search: {
+        position: 'relative',
+        borderRadius: theme.shape.borderRadius,
+        backgroundColor: fade(theme.palette.common.black, 0.05),
+        '&:hover': {
+            backgroundColor: fade(theme.palette.common.black, 0.10),
+        },
+        marginRight: theme.spacing(2),
+        marginLeft: 0,
+        width: '100%',
+        [theme.breakpoints.up('sm')]: {
+            marginLeft: theme.spacing(3),
+            width: 'auto',
+        },
+    },
+    searchIcon: {
+        padding: theme.spacing(0, 2),
+        height: '100%',
+        position: 'absolute',
+        pointerEvents: 'none',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+    },
+    inputRoot: {
+        color: 'inherit',
+    },
+    inputInput: {
+        padding: theme.spacing(1, 1, 1, 0),
+        // vertical padding + font size from searchIcon
+        paddingLeft: `calc(1em + ${theme.spacing(4)}px)`,
+        transition: theme.transitions.create('width'),
+        width: '100%',
+        [theme.breakpoints.up('md')]: {
+            width: '20ch',
+        },
+    },
 }));
 
 const createContext = (config) => {
@@ -85,7 +126,10 @@ const createContext = (config) => {
                     strict: false,
                     phrase: false
                 },
-                ordenation: {},
+                ordenation: {
+                    orderBy: config.id,
+                    order: 'ascending'
+                },
                 pagination: {
                     size: 5,
                     number: 1
@@ -100,7 +144,10 @@ const createContext = (config) => {
         generateEndpoit: (context) => {
             let pageSize = `pagesize=${context.response.request.pagination.size}`;
             let pageNumber = `pagenumber=${context.response.request.pagination.number}`;
-            return context.endpoint + '?' + pageSize + '&' + pageNumber;
+            let query = context.response.request.searchProperties.query !== '' ? `query=${context.response.request.searchProperties.query}&` : '';
+            let orderBy = `orderby=${context.response.request.ordenation.orderBy}`;
+            let order = `order=${context.response.request.ordenation.order}`;
+            return context.endpoint + '?' + query + orderBy + '&' + order + '&' + pageSize + '&' + pageNumber;
         }
     }
 };
@@ -123,7 +170,22 @@ const ApiConnectedTable = props => {
             });
     };
     const handleRequestSort = (property) => (event) => {
-        console.log('click: handleRequestSort');
+        const isAscending = property === context.response.request.ordenation.orderBy && context.response.request.ordenation.order === 'ascending';
+        const order = isAscending ? 'descending' : 'ascending';
+
+        setContext({
+            ...context,
+            response: {
+                ...context.response,
+                request: {
+                    ...context.response.request,
+                    ordenation: {
+                        orderBy: property,
+                        order: order
+                    }
+                }
+            }
+        });
     };
     const handleSelectAllClick = (event) => {
         if (event.target.checked) {
@@ -162,7 +224,7 @@ const ApiConnectedTable = props => {
                     ...context.response.request,
                     pagination: {
                         ...context.response.request.pagination,
-                        number: newPage+1
+                        number: newPage + 1
                     }
                 }
             }
@@ -189,11 +251,44 @@ const ApiConnectedTable = props => {
     const handleClickFilter = (event) => {
         console.log('click: handleClickFilter');
     };
-    const handleClickEdit = (event) => {
-        config.actions['edit'].handler();
+    const handleClickEdit = (id) => (event) => {
+        config.actions['edit'].handler(id);
     };
     const handleClickDelete = (event) => {
         config.actions['delete'].handler();
+    };
+    const handleQuery = (event) => {
+        console.log(event.target.value);
+
+        setContext({
+            ...context,
+            response: {
+                ...context.response,
+                request: {
+                    ...context.response.request,
+                    searchProperties: {
+                        ...context.response.request.searchProperties,
+                        query: event.target.value
+                    }
+                }
+            }
+        });
+
+        //debounce(setValue(event.target.value), 300, false)();
+    };
+    const debounce = (func, wait, immediate) => {
+        var timeout;
+        return () => {
+            var c = this;
+            var later = () => {
+                timeout = null;
+                if (!immediate) func.apply(c);
+            };
+            var callNow = immediate && !timeout;
+            clearTimeout(timeout);
+            timeout = setTimeout(later, wait);
+            if (callNow) func.apply(c);
+        };
     };
     const allowAction = (action) => {
         return config.actions !== undefined && config.actions[action] !== undefined;
@@ -225,10 +320,25 @@ const ApiConnectedTable = props => {
                                 {config.title}
                             </Typography>
                         )}
+                    <div className={classes.search}>
+                        <div className={classes.searchIcon}>
+                            <Search />
+                        </div>
+                        <InputBase
+                            placeholder="Search…"
+                            classes={{
+                                root: classes.inputRoot,
+                                input: classes.inputInput,
+                            }}
+                            inputProps={{ 'aria-label': 'search' }}
+                            value={context.response.request.searchProperties.query}
+                            onChange={handleQuery}
+                        />
+                    </div>
 
                     {allowAction('edit') && context.selected.length > 0 && context.selected.length === 1 ? (
                         <Tooltip title="Editar">
-                            <IconButton aria-label="edit" onClick={handleClickEdit}>
+                            <IconButton aria-label="edit" onClick={handleClickEdit(context.selected[0])}>
                                 <Edit />
                             </IconButton>
                         </Tooltip>) : (null)
@@ -289,7 +399,7 @@ const ApiConnectedTable = props => {
                                             >
                                                 {column.label}
                                                 {context.response.request.ordenation.orderBy === column.id ? (
-                                                    <span className={classes.main.visuallyHidden}>
+                                                    <span className={classes.mainVisuallyHidden}>
                                                         {context.response.request.ordenation.order === 'ascending' ? 'sorted ascending' : 'sorted descending'}
                                                     </span>
                                                 ) : null}
