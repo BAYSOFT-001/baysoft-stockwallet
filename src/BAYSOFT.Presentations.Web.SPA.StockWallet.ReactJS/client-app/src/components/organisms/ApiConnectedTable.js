@@ -1,6 +1,8 @@
-﻿import React, { useEffect } from 'react';
+﻿import React, { useEffect, useState, useCallback } from 'react';
 import { connect } from 'react-redux';
 import clsx from 'clsx';
+import { debounce } from 'debounce';
+
 import {
     lighten,
     fade,
@@ -157,6 +159,7 @@ const ApiConnectedTable = props => {
     const tableContext = createContext(config);
     const classes = useStyles();
     const [context, setContext] = React.useState(tableContext);
+    const [query, setQuery] = useState(context.response.request.searchProperties.query);
     const emptyRows = context.response.request.pagination.size - context.response.data.length;
     const loadData = (endpoint) => {
         console.log(endpoint);
@@ -169,6 +172,21 @@ const ApiConnectedTable = props => {
                 });
             });
     };
+    const debounceQuery = useCallback(debounce((value) => {
+        setContext({
+            ...context,
+            response: {
+                ...context.response,
+                request: {
+                    ...context.response.request,
+                    searchProperties: {
+                        ...context.response.request.searchProperties,
+                        query: value
+                    }
+                }
+            }
+        });
+    }, 3000, false), []);
     const handleRequestSort = (property) => (event) => {
         const isAscending = property === context.response.request.ordenation.orderBy && context.response.request.ordenation.order === 'ascending';
         const order = isAscending ? 'descending' : 'ascending';
@@ -258,51 +276,27 @@ const ApiConnectedTable = props => {
         config.actions['delete'].handler();
     };
     const handleQuery = (event) => {
-        console.log(event.target.value);
-
-        setContext({
-            ...context,
-            response: {
-                ...context.response,
-                request: {
-                    ...context.response.request,
-                    searchProperties: {
-                        ...context.response.request.searchProperties,
-                        query: event.target.value
-                    }
-                }
-            }
-        });
-
-        //debounce(setValue(event.target.value), 300, false)();
-    };
-    const debounce = (func, wait, immediate) => {
-        var timeout;
-        return () => {
-            var c = this;
-            var later = () => {
-                timeout = null;
-                if (!immediate) func.apply(c);
-            };
-            var callNow = immediate && !timeout;
-            clearTimeout(timeout);
-            timeout = setTimeout(later, wait);
-            if (callNow) func.apply(c);
-        };
+        setQuery(event.target.value);
     };
     const allowAction = (action) => {
         return config.actions !== undefined && config.actions[action] !== undefined;
     }
     useEffect(() => {
+        console.log('effect1');
         if (context) {
             setContext({ ...context, filterQuery: context.generateEndpoit(context) });
         }
     }, [context.response.request]);
     useEffect(() => {
+        console.log('effect2');
         if (context) {
             loadData(context.filterQuery);
         }
     }, [context.filterQuery]);
+    useEffect(() => {
+        console.log('effect3');
+        debounceQuery(query);
+    }, [query]);
     return (
         <div className={classes.mainRoot}>
             <Paper className={classes.mainPaper}>
@@ -331,7 +325,7 @@ const ApiConnectedTable = props => {
                                 input: classes.inputInput,
                             }}
                             inputProps={{ 'aria-label': 'search' }}
-                            value={context.response.request.searchProperties.query}
+                            value={query}
                             onChange={handleQuery}
                         />
                     </div>
