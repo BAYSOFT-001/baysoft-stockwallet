@@ -115,165 +115,75 @@ const useStyles = makeStyles(theme => ({
     },
 }));
 
-const createContext = (config) => {
-    return {
-        filterQuery: '',
-        response: {
-            statusCode: 0,
-            internalCode: 0,
-            resultCount: 0,
-            message: '',
-            request: {
-                route: {},
-                searchProperties: {
-                    query: '',
-                    strict: false,
-                    phrase: false
-                },
-                ordenation: {
-                    orderBy: config.id,
-                    order: 'ascending'
-                },
-                pagination: {
-                    size: 5,
-                    number: 1
-                },
-                responseProperties: []
-            },
-            data: []
-        },
-        selected: [],
-        endpoint: config.endpoint,
-        parameters: [],
-        generateEndpoit: (context) => {
-            let pageSize = `pagesize=${context.response.request.pagination.size}`;
-            let pageNumber = `pagenumber=${context.response.request.pagination.number}`;
-            let query = context.response.request.searchProperties.query !== '' ? `query=${context.response.request.searchProperties.query}&` : '';
-            let orderBy = `orderby=${context.response.request.ordenation.orderBy}`;
-            let order = `order=${context.response.request.ordenation.order}`;
-            return context.endpoint + '?' + query + orderBy + '&' + order + '&' + pageSize + '&' + pageNumber;
-        }
-    }
-};
-
 const ApiConnectedTable = props => {
     const { config } = props;
-    const tableContext = createContext(config);
     const classes = useStyles();
-    const [context, setContext] = useState(tableContext);
-    const [query, setQuery] = useState(context.response.request.searchProperties.query);
-    const emptyRows = context.response.request.pagination.size - context.response.data.length;
 
     const api = props.CreateApiService(`${config.configId}-service`, config.endPoint);
     const filter = props.CreateApiFilter(`${config.configId}-filter`);
 
     const [requestUrl, setRequestUrl] = useState(config.endPoint);
-    const request = props.GetRequest(requestUrl);
-    console.log(request);
-    const loadData = (endpoint) => {
-        console.log(endpoint);
-        fetch(endpoint)
-            .then(response => response.json())
-            .then(obj => {
-                console.log(obj);
-                setContext({
-                    ...context,
-                    response: obj
-                });
-            });
+    const [request, setRequest] = useState(props.GetRequest(requestUrl));
 
+    const [query, setQuery] = useState('');
+    const [selectedRows, setSelectedRows] = useState([]);
+    const emptyRows = request && request.response ? request.response.request.pagination.size - request.response.data.length : 5;
+    console.log(requestUrl);
+    console.log(request);
+    const loadData = () => {
         setRequestUrl(api.GetByFilter(filter));
     };
     const debounceQuery = useCallback(debounce((value) => {
-        setContext({
-            ...context,
-            response: {
-                ...context.response,
-                request: {
-                    ...context.response.request,
-                    searchProperties: {
-                        ...context.response.request.searchProperties,
-                        query: value
-                    }
-                }
-            }
-        });
+        let strict = request && request.response ? request.response.request.searchProperties.strict : false;
+        let phrase = request && request.response ? request.response.request.searchProperties.phrase : false;
+        filter.setSearch(value, strict, phrase);
+
+        loadData();
     }, 3000, false), []);
     const handleRequestSort = (property) => (event) => {
-        const isAscending = property === context.response.request.ordenation.orderBy && context.response.request.ordenation.order === 'ascending';
+        const isAscending = property === request.response.request.ordenation.orderBy && request.response.request.ordenation.order === 'ascending';
         const order = isAscending ? 'descending' : 'ascending';
 
-        setContext({
-            ...context,
-            response: {
-                ...context.response,
-                request: {
-                    ...context.response.request,
-                    ordenation: {
-                        orderBy: property,
-                        order: order
-                    }
-                }
-            }
-        });
+        filter.setOrdenation(property, order);
+
+        loadData();
     };
     const handleSelectAllClick = (event) => {
         if (event.target.checked) {
-            const newSelecteds = context.response.data.map((value) => value[config.id]);
+            const newSelecteds = request.response.data.map((value) => value[config.id]);
             console.log(newSelecteds);
-            setContext({ ...context, selected: newSelecteds });
+            setSelectedRows(newSelecteds);
             return;
         }
-        setContext({ ...context, selected: [] });
+        setSelectedRows([]);
     };
     const handleClick = (event, id) => {
-        const selectedIndex = context.selected.indexOf(id);
+        const selectedIndex = selectedRows.indexOf(id);
         let newSelected = [];
 
         if (selectedIndex === -1) {
-            newSelected = newSelected.concat(context.selected, id);
+            newSelected = newSelected.concat(selectedRows, id);
         } else if (selectedIndex === 0) {
-            newSelected = newSelected.concat(context.selected.slice(1));
-        } else if (selectedIndex === context.selected.length - 1) {
-            newSelected = newSelected.concat(context.selected.slice(0, -1));
+            newSelected = newSelected.concat(selectedRows.slice(1));
+        } else if (selectedIndex === selectedRows.length - 1) {
+            newSelected = newSelected.concat(selectedRows.slice(0, -1));
         } else if (selectedIndex > 0) {
             newSelected = newSelected.concat(
-                context.selected.slice(0, selectedIndex),
-                context.selected.slice(selectedIndex + 1),
+                selectedRows.slice(0, selectedIndex),
+                selectedRows.slice(selectedIndex + 1),
             );
         }
-        setContext({ ...context, selected: newSelected });
+        setSelectedRows(newSelected);
     };
     const handleChangePage = (event, newPage) => {
-        console.log(newPage);
-        setContext({
-            ...context,
-            response: {
-                ...context.response,
-                request: {
-                    ...context.response.request,
-                    pagination: {
-                        ...context.response.request.pagination,
-                        number: newPage + 1
-                    }
-                }
-            }
-        });
+        filter.setPagination(request.response.request.pagination.size, newPage + 1);
+
+        loadData();
     };
     const handleChangeRowsPerPage = (event) => {
-        setContext({
-            ...context,
-            response: {
-                ...context.response,
-                request: {
-                    ...context.response.request,
-                    pagination: {
-                        size: event.target.value,
-                        number: 1
-                    }
-                }
-            }
-        });
+        filter.setPagination(event.target.value, 1);
+
+        loadData();
     };
     const handleClickAdd = (event) => {
         config.actions['add'].handler();
@@ -294,32 +204,25 @@ const ApiConnectedTable = props => {
         return config.actions !== undefined && config.actions[action] !== undefined;
     }
     useEffect(() => {
-        console.log('effect1');
-        if (context) {
-            setContext({ ...context, filterQuery: context.generateEndpoit(context) });
-        }
-    }, [context.response.request]);
+        loadData();
+    });
     useEffect(() => {
-        console.log('effect2');
-        if (context) {
-            loadData(context.filterQuery);
-        }
-    }, [context.filterQuery]);
+        setRequest(props.GetRequest(requestUrl));
+    }, [requestUrl]);
     useEffect(() => {
-        console.log('effect3');
         debounceQuery(query);
-    }, [query]);
+    }, [query, debounceQuery]);
     return (
         <div className={classes.mainRoot}>
             <Paper className={classes.mainPaper}>
                 <Toolbar
                     className={clsx(classes.toolbarRoot, {
-                        [classes.toolbarHighlight]: context.selected.length > 0,
+                        [classes.toolbarHighlight]: selectedRows.length > 0,
                     })}
                 >
-                    {context.selected.length > 0 ? (
+                    {selectedRows.length > 0 ? (
                         <Typography className={classes.toolbarTitle} color="inherit" variant="subtitle1" component="div">
-                            {context.selected.length} {context.selected.length > 1 ? 'itens selecionados' : 'item selecionado'}
+                            {selectedRows.length} {selectedRows.length > 1 ? 'itens selecionados' : 'item selecionado'}
                         </Typography>
                     ) : (
                             <Typography className={classes.toolbarTitle} variant="h6" id="tableTitle" component="div">
@@ -342,15 +245,15 @@ const ApiConnectedTable = props => {
                         />
                     </div>
 
-                    {allowAction('edit') && context.selected.length > 0 && context.selected.length === 1 ? (
+                    {allowAction('edit') && selectedRows.length > 0 && selectedRows.length === 1 ? (
                         <Tooltip title="Editar">
-                            <IconButton aria-label="edit" onClick={handleClickEdit(context.selected[0])}>
+                            <IconButton aria-label="edit" onClick={handleClickEdit(selectedRows[0])}>
                                 <Edit />
                             </IconButton>
                         </Tooltip>) : (null)
                     }
 
-                    {allowAction('delete') && context.selected.length > 0 ? (
+                    {allowAction('delete') && selectedRows.length > 0 ? (
                         <Tooltip title="Excluir">
                             <IconButton aria-label="delete" onClick={handleClickDelete}>
                                 <Delete />
@@ -383,8 +286,8 @@ const ApiConnectedTable = props => {
                             <TableRow>
                                 <TableCell padding="checkbox">
                                     <Checkbox
-                                        indeterminate={context.selected.length > 0 && context.selected.length < context.response.data.length}
-                                        checked={context.response.data.length > 0 && context.selected.length === context.response.data.length}
+                                        indeterminate={selectedRows.length > 0 && selectedRows.length < request.response.data.length}
+                                        checked={request && request.response && request.response.data.length > 0 && selectedRows.length === request.response.data.length}
                                         onChange={handleSelectAllClick}
                                         inputProps={{ 'aria-label': 'select all desserts' }}
                                     />
@@ -395,18 +298,18 @@ const ApiConnectedTable = props => {
                                             key={column.id}
                                             align={column.isNumeric ? 'right' : 'left'}
                                             padding={column.disablePadding ? 'none' : 'default'}
-                                            sortDirection={context.response.request.ordenation.orderBy === column.id ? context.response.request.ordenation.order === 'ascending' ? 'asc' : 'desc' : false}
+                                            sortDirection={request && request.response && request.response.request.ordenation.orderBy === column.id ? request.response.request.ordenation.order === 'ascending' ? 'asc' : 'desc' : false}
                                         >
                                             <TableSortLabel
                                                 style={{ fontWeight: 'bold' }}
-                                                active={context.response.request.ordenation.orderBy === column.id}
-                                                direction={context.response.request.ordenation.orderBy === column.id ? context.response.request.ordenation.order === 'ascending' ? 'asc' : 'desc' : 'asc'}
+                                                active={request && request.response && request.response.request.ordenation.orderBy === column.id}
+                                                direction={request && request.response && request.response.request.ordenation.orderBy === column.id ? request.response.request.ordenation.order === 'ascending' ? 'asc' : 'desc' : 'asc'}
                                                 onClick={handleRequestSort(column.id)}
                                             >
                                                 {column.label}
-                                                {context.response.request.ordenation.orderBy === column.id ? (
+                                                {request && request.response && request.response.request.ordenation.orderBy === column.id ? (
                                                     <span className={classes.mainVisuallyHidden}>
-                                                        {context.response.request.ordenation.order === 'ascending' ? 'sorted ascending' : 'sorted descending'}
+                                                        {request && request.response.request.ordenation.order === 'ascending' ? 'sorted ascending' : 'sorted descending'}
                                                     </span>
                                                 ) : null}
                                             </TableSortLabel>
@@ -415,8 +318,8 @@ const ApiConnectedTable = props => {
                             </TableRow>
                         </TableHead>
                         <TableBody>
-                            {request && request.response !== undefined && request.response !== null && request.response.statusCode === 200 ? request.response.data.map((value, index) => {
-                                const isItemSelected = context.selected.indexOf(value[config.id]) !== -1;
+                            {request && request.response && request.response !== undefined && request.response !== null && request.response.statusCode === 200 ? request.response.data.map((value, index) => {
+                                const isItemSelected = selectedRows.indexOf(value[config.id]) !== -1;
                                 const labelId = `enhanced-table-checkbox-${index}`;
                                 return (
                                     <TableRow
@@ -450,7 +353,7 @@ const ApiConnectedTable = props => {
                         </TableBody>
                     </Table>
                 </TableContainer>
-                {request && request.response !== undefined && request.response !== null && request.response.statusCode === 200 ? (
+                {request && request.response && request.response !== undefined && request.response !== null && request.response.statusCode === 200 ? (
                     <TablePagination
                         rowsPerPageOptions={[5, 10, 25]}
                         component="div"

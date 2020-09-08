@@ -3,7 +3,7 @@
     REQUEST_DATA, RECEIVE_DATA
 } from './types';
 
-import { SHA256, Base } from 'crypto-js';
+import { SHA256 } from 'crypto-js';
 
 const getUrl = (collection, filterProperties, searchProperties, ordenation, pagination, responseProperties) => {
     let endpoint = '';
@@ -101,16 +101,32 @@ const ApiWrapper = (id, collection, expires) => (dispatch) => {
             return url;
         },
         Delete(id) {
+            let url = `${this.collection}/${id}`;
 
+            dispatch(HttpDelete(url));
+
+            return url;
         },
         Patch(id, patchModel) {
+            let url = `${this.collection}/${id}`;
 
+            dispatch(HttpPatch(url, patchModel));
+
+            return url;
         },
         Post(postModel) {
+            let url = `${this.collection}`;
 
+            dispatch(HttpPost(url, postModel));
+
+            return url;
         },
         Put(id, putModel) {
+            let url = `${this.collection}/${id}`;
 
+            dispatch(HttpPut(url, putModel));
+
+            return url;
         }
     }
 };
