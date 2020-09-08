@@ -2,8 +2,10 @@
 import { connectRouter } from 'connected-react-router'
 
 import { ApplicationReducer } from './application';
+import { ApiModelWrapperReducer } from './apiModelWrapper';
 
 export const Reducers = (history) => combineReducers({
     router: connectRouter(history),
-    applicationState: ApplicationReducer
+    applicationState: ApplicationReducer,
+    ApiModelWrapperState: ApiModelWrapperReducer
 });

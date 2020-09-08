@@ -11,7 +11,8 @@ import ApiConnectedTable from '../../organisms/ApiConnectedTable';
 const IndexPage = (props) => {
     const config = {
         title: 'List of samples',
-        endpoint: 'https://localhost:4101/api/samples',
+        configId: 'samples-index-table',
+        endPoint: 'https://localhost:4101/api/samples',
         id: 'sampleID',
         dense: false,
         columns: [{

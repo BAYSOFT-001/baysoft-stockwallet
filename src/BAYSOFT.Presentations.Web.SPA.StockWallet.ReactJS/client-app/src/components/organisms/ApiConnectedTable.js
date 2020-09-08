@@ -1,7 +1,9 @@
 ﻿import React, { useEffect, useState, useCallback } from 'react';
+import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import clsx from 'clsx';
 import { debounce } from 'debounce';
+import { CreateApiService, CreateApiFilter, GetRequest } from '../../state/actions/apiModelWrapper/actions';
 
 import {
     lighten,
@@ -158,19 +160,29 @@ const ApiConnectedTable = props => {
     const { config } = props;
     const tableContext = createContext(config);
     const classes = useStyles();
-    const [context, setContext] = React.useState(tableContext);
+    const [context, setContext] = useState(tableContext);
     const [query, setQuery] = useState(context.response.request.searchProperties.query);
     const emptyRows = context.response.request.pagination.size - context.response.data.length;
+
+    const api = props.CreateApiService(`${config.configId}-service`, config.endPoint);
+    const filter = props.CreateApiFilter(`${config.configId}-filter`);
+
+    const [requestUrl, setRequestUrl] = useState(config.endPoint);
+    const request = props.GetRequest(requestUrl);
+    console.log(request);
     const loadData = (endpoint) => {
         console.log(endpoint);
         fetch(endpoint)
             .then(response => response.json())
-            .then(data => {
+            .then(obj => {
+                console.log(obj);
                 setContext({
                     ...context,
-                    response: data
+                    response: obj
                 });
             });
+
+        setRequestUrl(api.GetByFilter(filter));
     };
     const debounceQuery = useCallback(debounce((value) => {
         setContext({
@@ -403,7 +415,7 @@ const ApiConnectedTable = props => {
                             </TableRow>
                         </TableHead>
                         <TableBody>
-                            {context.response !== undefined && context.response !== null && context.response.statusCode === 200 ? context.response.data.map((value, index) => {
+                            {request && request.response !== undefined && request.response !== null && request.response.statusCode === 200 ? request.response.data.map((value, index) => {
                                 const isItemSelected = context.selected.indexOf(value[config.id]) !== -1;
                                 const labelId = `enhanced-table-checkbox-${index}`;
                                 return (
@@ -438,13 +450,13 @@ const ApiConnectedTable = props => {
                         </TableBody>
                     </Table>
                 </TableContainer>
-                {context.response !== undefined && context.response !== null && context.response.statusCode === 200 ? (
+                {request && request.response !== undefined && request.response !== null && request.response.statusCode === 200 ? (
                     <TablePagination
                         rowsPerPageOptions={[5, 10, 25]}
                         component="div"
-                        count={context.response.resultCount}
-                        rowsPerPage={context.response.request.pagination.size}
-                        page={context.response.request.pagination.number - 1}
+                        count={request.response.resultCount}
+                        rowsPerPage={request.response.request.pagination.size}
+                        page={request.response.request.pagination.number - 1}
                         onChangePage={handleChangePage}
                         onChangeRowsPerPage={handleChangeRowsPerPage}
                     />)
@@ -458,6 +470,13 @@ const mapStateToProps = store => ({
     application: store.applicationState.application
 });
 
-const connectedComponent = connect(mapStateToProps)(ApiConnectedTable);
+const mapDispatchToProps = dispatch =>
+    bindActionCreators({
+        CreateApiService,
+        CreateApiFilter,
+        GetRequest
+    }, dispatch);
+
+const connectedComponent = connect(mapStateToProps, mapDispatchToProps)(ApiConnectedTable);
 
 export default connectedComponent;

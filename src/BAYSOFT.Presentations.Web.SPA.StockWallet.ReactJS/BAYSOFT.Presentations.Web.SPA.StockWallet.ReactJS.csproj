@@ -11,7 +11,6 @@
   <ItemGroup>
     <Folder Include="client-app\src\assets\material-ui\" />
     <Folder Include="client-app\src\components\atoms\" />
-    <Folder Include="client-app\src\services\" />
   </ItemGroup>
 
 </Project>
