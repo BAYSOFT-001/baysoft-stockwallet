@@ -1,6 +1,12 @@
-﻿import {
+﻿import { push } from 'connected-react-router';
+
+import {
     CREATE_API_SERVICE, CREATE_API_FILTER,
-    REQUEST_DATA, RECEIVE_DATA
+    REQUEST_DATA, RECEIVE_DATA,
+    REQUEST_DELETE_DATA, RECEIVE_DELETE_DATA,
+    REQUEST_PATCH_DATA, RECEIVE_PATCH_DATA,
+    REQUEST_PUT_DATA, RECEIVE_PUT_DATA,
+    REQUEST_POST_DATA, RECEIVE_POST_DATA
 } from './types';
 
 const getUrl = (collection, filterProperties, searchProperties, ordenation, pagination, responseProperties) => {
@@ -108,21 +114,21 @@ const ApiWrapper = (id, collection, expires) => (dispatch) => {
         Patch(id, patchModel) {
             let url = `${this.collection}/${id}`;
 
-            dispatch(HttpPatch(url, patchModel));
+            dispatch(HttpPatch(url, patchModel, this.expires));
 
             return url;
         },
-        Post(postModel) {
+        Post(postModel, returnUrl) {
             let url = `${this.collection}`;
 
-            dispatch(HttpPost(url, postModel));
+            dispatch(HttpPost(url, postModel, this.expires, returnUrl));
 
             return url;
         },
         Put(id, putModel) {
             let url = `${this.collection}/${id}`;
 
-            dispatch(HttpPut(url, putModel));
+            dispatch(HttpPut(url, putModel, this.expires));
 
             return url;
         }
@@ -139,9 +145,9 @@ const ApiFilter = (id) => {
         responseProperties: [],
         clear() {
             this.filterProperties = [];
-            this.searchProperties = { };
-            this.ordenation = { };
-            this.pagination = { };
+            this.searchProperties = {};
+            this.ordenation = {};
+            this.pagination = {};
             this.responseProperties = [];
 
             return this;
@@ -182,7 +188,7 @@ const ApiFilter = (id) => {
 const CreateApiService = (id, collection) => (dispatch, getState) => {
     const { ApiModelWrapperState } = getState();
     const { apiServices } = ApiModelWrapperState;
-    
+
     let filteredApiServices = apiServices.filter((apiService) => apiService.id === id);
 
     let apiServiceExists = filteredApiServices && filteredApiServices.length === 1;
@@ -252,8 +258,33 @@ const HttpPatch = (endPoint, patchedModel) => (dispatch, getState) => {
 
 };
 
-const HttpPost = (endPoint, postedModel) => (dispatch, getState) => {
+const HttpPost = (endPoint, postedModel, expires, returnUrl) => (dispatch, getState) => {
+    const { ApiModelWrapperState } = getState();
+    const { posts } = ApiModelWrapperState;
+    let lastRequest = posts[endPoint];
+    let timeStamp = Date.now();
+    if (lastRequest && lastRequest.timeStamp > timeStamp && lastRequest.endPoint === endPoint) {
+        return;
+    }
 
+    //fetch(endPoint)
+    //    .then(response => response.json())
+    //    .then(data => {
+    //        let timeStamp = Date.now();
+    //        timeStamp += expires;
+    //        dispatch({ type: RECEIVE_POST_DATA, payload: { endPoint: endPoint, timeStamp: timeStamp, response: data } });
+    //    })
+    //    .catch(error => console.error(error));
+
+    setTimeout(() => {
+        let timeStamp = Date.now();
+        timeStamp += expires;
+        dispatch({ type: RECEIVE_POST_DATA, payload: { endPoint: endPoint, data: null } });
+        dispatch(push(returnUrl));
+    }, 3000);
+
+    timeStamp += expires;
+    dispatch({ type: REQUEST_POST_DATA, payload: { endPoint: endPoint, data: postedModel } });
 };
 
 const HttpPut = (endPoint, puttedModel) => (dispatch, getState) => {

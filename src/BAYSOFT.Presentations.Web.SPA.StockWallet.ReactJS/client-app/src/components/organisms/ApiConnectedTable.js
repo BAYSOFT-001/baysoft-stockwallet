@@ -212,6 +212,9 @@ const ApiConnectedTable = props => {
         return config.actions !== undefined && config.actions[action] !== undefined;
     }
     useEffect(() => {
+        loadData();
+    });
+    useEffect(() => {
         if (requests && requests[requestUrl] && requests[requestUrl].response) {
             setResponse(requests[requestUrl].response);
             setPageRowCount(requests[requestUrl].response.data.length);

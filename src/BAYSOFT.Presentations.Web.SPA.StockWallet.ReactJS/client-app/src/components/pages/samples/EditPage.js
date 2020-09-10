@@ -1,4 +1,4 @@
-﻿import React, { useState } from 'react';
+﻿import React, { useState, useEffect } from 'react';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import { push } from 'connected-react-router';
@@ -18,6 +18,7 @@ import {
 import {
     KeyboardBackspace
 } from '@material-ui/icons';
+import { CreateApiService } from '../../../state/actions/apiModelWrapper/actions';
 
 const useStyles = makeStyles(theme => ({
     mainPaper: {
@@ -42,8 +43,12 @@ const useStyles = makeStyles(theme => ({
 }));
 
 const EditPage = (props) => {
+    const { requests } = props;
     const classes = useStyles();
+    const [requestUrl, setRequestUrl] = useState('');
     const [sample, setSample] = useState({ description: '' });
+
+    const api = props.CreateApiService(`samples-service`, 'https://localhost:4101/api/samples');
 
     const handleClickBack = (event) => {
         props.push('/samples');
@@ -52,6 +57,19 @@ const EditPage = (props) => {
     const handleChange = (prop) => (event) => {
         setSample({ ...sample, [prop]: event.target.value });
     };
+
+    const handleClickSave = () => {
+        api.Put(props.match.params.id, sample);
+    };
+
+    useEffect(() => {
+        setRequestUrl(api.GetById(props.match.params.id));
+    });
+    useEffect(() => {
+        if (requests && requests[requestUrl] && requests[requestUrl].response) {
+            setSample(requests[requestUrl].response.data);
+        }
+    }, [requests, requestUrl]);
 
     return (
         <Templates.MaterialTemplate.DashboardLayout>
@@ -89,12 +107,14 @@ const EditPage = (props) => {
 };
 
 const mapStateToProps = store => ({
-    application: store.applicationState.application
+    application: store.applicationState.application,
+    requests: store.ApiModelWrapperState.requests
 });
 
 const mapDispatchToProps = dispatch =>
     bindActionCreators({
-        push
+        push,
+        CreateApiService
     }, dispatch);
 
 const connectedComponent = connect(mapStateToProps, mapDispatchToProps)(EditPage);

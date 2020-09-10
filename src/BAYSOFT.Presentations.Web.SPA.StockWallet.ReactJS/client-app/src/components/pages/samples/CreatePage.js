@@ -22,6 +22,7 @@ import {
 import {
     KeyboardBackspace
 } from '@material-ui/icons';
+import { CreateApiService } from '../../../state/actions/apiModelWrapper/actions';
 
 const useStyles = makeStyles(theme => ({
     mainPaper: {
@@ -46,15 +47,24 @@ const useStyles = makeStyles(theme => ({
 }));
 
 const CreatePage = (props) => {
+    const returnUrl = '/samples';
+    const { requests } = props;
     const classes = useStyles();
+    const [requestUrl, setRequestUrl] = useState('');
     const [sample, setSample] = useState({ description: '' });
 
+    const api = props.CreateApiService(`samples-service`, 'https://localhost:4101/api/samples');
+
     const handleClickBack = (event) => {
-        props.push('/samples');
+        props.push(returnUrl);
     };
 
     const handleChange = (prop) => (event) => {
         setSample({ ...sample, [prop]: event.target.value });
+    };
+
+    const handleClickSave = () => {
+        api.Post(sample, returnUrl);
     };
 
     return (
@@ -84,7 +94,7 @@ const CreatePage = (props) => {
                     <Grid container spacing={0} justify="flex-end" >
                         <Grid item lg={2} md={4} xs={6}>
                             <FormControl fullWidth className={classes.formMargin} >
-                                <Button variant="contained" color="primary" href="#contained-buttons">Save</Button>
+                                <Button variant="contained" color="primary" href="#contained-buttons" onClick={handleClickSave}>Save</Button>
                             </FormControl>
                         </Grid>
                     </Grid>
@@ -95,12 +105,14 @@ const CreatePage = (props) => {
 };
 
 const mapStateToProps = store => ({
-    application: store.applicationState.application
+    application: store.applicationState.application,
+    requests: store.ApiModelWrapperState.requests
 });
 
 const mapDispatchToProps = dispatch =>
     bindActionCreators({
-        push
+        push,
+        CreateApiService
     }, dispatch);
 
 const connectedComponent = connect(mapStateToProps, mapDispatchToProps)(CreatePage);
