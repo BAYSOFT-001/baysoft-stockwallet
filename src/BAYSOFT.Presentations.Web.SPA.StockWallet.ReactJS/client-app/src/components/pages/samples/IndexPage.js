@@ -15,6 +15,7 @@ const IndexPage = (props) => {
         endPoint: 'https://localhost:4101/api/samples',
         id: 'sampleID',
         dense: false,
+        defaultPageSize: 5,
         columns: [{
             id: 'description',
             isNumeric: false,

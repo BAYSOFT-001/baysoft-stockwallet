@@ -1,4 +1,4 @@
-﻿import React, { useState } from 'react';
+﻿import React, { useEffect } from 'react';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 
@@ -8,18 +8,12 @@ import {
     Typography,
     Button
 } from '@material-ui/core';
-import { CreateApiService, CreateApiFilter, GetRequest } from '../../../state/actions/apiModelWrapper/actions';
+import { CreateApiService, CreateApiFilter } from '../../../state/actions/apiModelWrapper/actions';
 
 const IndexPage = (props) => {
-    const [requestUrl, setRequestUrl] = useState('https://localhost:4101/api/samples');
     const { requests } = props;
     console.log(requests);
-    const request = props.GetRequest(requestUrl);
-    console.log(request);
-
     const handleClickCallThunkWithDifferentEndpoint = () => {
-        const { teste } = props;
-        console.log(teste);
         console.log('clicked: Call thunk!');
 
         let api = props.CreateApiService('home-index-stocks', 'https://localhost:4101/api/stocks');
@@ -49,9 +43,12 @@ const IndexPage = (props) => {
             .setOrdenation('sampleID', 'ascending')
             .setPagination(5, 1);
         
-        setRequestUrl(api.GetByFilter(filter));
+        api.GetByFilter(filter);
     };
-        
+    useEffect(() => {
+        console.log('useEffect => requests');
+        console.log(requests);
+    }, [requests])
     return (
         <Templates.MaterialTemplate.DashboardLayout>
             <Typography variant="h6" noWrap>
@@ -73,8 +70,7 @@ const mapStateToProps = store => ({
 const mapDispatchToProps = dispatch =>
     bindActionCreators({
         CreateApiService,
-        CreateApiFilter,
-        GetRequest
+        CreateApiFilter
     }, dispatch);
 
 const connectedComponent = connect(mapStateToProps, mapDispatchToProps)(IndexPage);

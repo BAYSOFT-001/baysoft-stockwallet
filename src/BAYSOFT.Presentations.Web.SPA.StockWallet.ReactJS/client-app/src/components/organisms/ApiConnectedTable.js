@@ -3,7 +3,7 @@ import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import clsx from 'clsx';
 import { debounce } from 'debounce';
-import { CreateApiService, CreateApiFilter, GetRequest } from '../../state/actions/apiModelWrapper/actions';
+import { CreateApiService, CreateApiFilter } from '../../state/actions/apiModelWrapper/actions';
 
 import {
     lighten,
@@ -117,31 +117,37 @@ const useStyles = makeStyles(theme => ({
 
 const ApiConnectedTable = props => {
     const { config } = props;
+    const { requests } = props;
     const classes = useStyles();
+    const [requestUrl, setRequestUrl] = useState(config.endPoint);
+    const [response, setResponse] = useState(null);
 
     const api = props.CreateApiService(`${config.configId}-service`, config.endPoint);
-    const filter = props.CreateApiFilter(`${config.configId}-filter`);
-
-    const [requestUrl, setRequestUrl] = useState(config.endPoint);
-    const [request, setRequest] = useState(props.GetRequest(requestUrl));
+    const filter = props.CreateApiFilter(`${config.configId}-filter`)
+        .clear()
+        .setOrdenation(config.id, 'ascending')
+        .setPagination(config.defaultPageSize, 0)
+        .addResponseProperties([config.id, ...config.columns.map(column => column.id)]);
 
     const [query, setQuery] = useState('');
     const [selectedRows, setSelectedRows] = useState([]);
-    const emptyRows = request && request.response ? request.response.request.pagination.size - request.response.data.length : 5;
-    console.log(requestUrl);
-    console.log(request);
+    const [pageRowCount, setPageRowCount] = useState(config.defaultPageSize);
+    const [hasAllLinesChecked, setHasAllLinesChecked] = useState(false);
+    const [hasLinesChecked, setHasLinesChecked] = useState(false);
+    const emptyRows = response ? response.request.pagination.size - response.data.length : config.defaultPageSize;
     const loadData = () => {
-        setRequestUrl(api.GetByFilter(filter));
+        let url = api.GetByFilter(filter);
+        console.log(url);
+        setRequestUrl(url);
     };
     const debounceQuery = useCallback(debounce((value) => {
-        let strict = request && request.response ? request.response.request.searchProperties.strict : false;
-        let phrase = request && request.response ? request.response.request.searchProperties.phrase : false;
+        let strict = response ? response.request.searchProperties.strict : false;
+        let phrase = response ? response.request.searchProperties.phrase : false;
         filter.setSearch(value, strict, phrase);
-
         loadData();
     }, 3000, false), []);
     const handleRequestSort = (property) => (event) => {
-        const isAscending = property === request.response.request.ordenation.orderBy && request.response.request.ordenation.order === 'ascending';
+        const isAscending = property === response.request.ordenation.orderBy && response.request.ordenation.order === 'ascending';
         const order = isAscending ? 'descending' : 'ascending';
 
         filter.setOrdenation(property, order);
@@ -150,9 +156,11 @@ const ApiConnectedTable = props => {
     };
     const handleSelectAllClick = (event) => {
         if (event.target.checked) {
-            const newSelecteds = request.response.data.map((value) => value[config.id]);
+            const newSelecteds = response.data.map((value) => value[config.id]);
             console.log(newSelecteds);
             setSelectedRows(newSelecteds);
+            setHasAllLinesChecked(true);
+            setHasLinesChecked(false);
             return;
         }
         setSelectedRows([]);
@@ -176,7 +184,7 @@ const ApiConnectedTable = props => {
         setSelectedRows(newSelected);
     };
     const handleChangePage = (event, newPage) => {
-        filter.setPagination(request.response.request.pagination.size, newPage + 1);
+        filter.setPagination(response.request.pagination.size, newPage + 1);
 
         loadData();
     };
@@ -204,11 +212,15 @@ const ApiConnectedTable = props => {
         return config.actions !== undefined && config.actions[action] !== undefined;
     }
     useEffect(() => {
-        loadData();
-    });
+        if (requests && requests[requestUrl] && requests[requestUrl].response) {
+            setResponse(requests[requestUrl].response);
+            setPageRowCount(requests[requestUrl].response.data.length);
+        }
+    }, [requests, requestUrl])
     useEffect(() => {
-        setRequest(props.GetRequest(requestUrl));
-    }, [requestUrl]);
+        setHasAllLinesChecked(selectedRows.length === pageRowCount);
+        setHasLinesChecked(selectedRows.length < pageRowCount && selectedRows.length > 0);
+    }, [selectedRows, pageRowCount]);
     useEffect(() => {
         debounceQuery(query);
     }, [query, debounceQuery]);
@@ -286,8 +298,8 @@ const ApiConnectedTable = props => {
                             <TableRow>
                                 <TableCell padding="checkbox">
                                     <Checkbox
-                                        indeterminate={selectedRows.length > 0 && selectedRows.length < request.response.data.length}
-                                        checked={request && request.response && request.response.data.length > 0 && selectedRows.length === request.response.data.length}
+                                        indeterminate={hasLinesChecked}
+                                        checked={hasAllLinesChecked}
                                         onChange={handleSelectAllClick}
                                         inputProps={{ 'aria-label': 'select all desserts' }}
                                     />
@@ -298,18 +310,18 @@ const ApiConnectedTable = props => {
                                             key={column.id}
                                             align={column.isNumeric ? 'right' : 'left'}
                                             padding={column.disablePadding ? 'none' : 'default'}
-                                            sortDirection={request && request.response && request.response.request.ordenation.orderBy === column.id ? request.response.request.ordenation.order === 'ascending' ? 'asc' : 'desc' : false}
+                                            sortDirection={response && response.request.ordenation.orderBy === column.id ? response.request.ordenation.order === 'ascending' ? 'asc' : 'desc' : false}
                                         >
                                             <TableSortLabel
                                                 style={{ fontWeight: 'bold' }}
-                                                active={request && request.response && request.response.request.ordenation.orderBy === column.id}
-                                                direction={request && request.response && request.response.request.ordenation.orderBy === column.id ? request.response.request.ordenation.order === 'ascending' ? 'asc' : 'desc' : 'asc'}
+                                                active={response && response.request.ordenation.orderBy === column.id}
+                                                direction={response && response.request.ordenation.orderBy === column.id ? response.request.ordenation.order === 'ascending' ? 'asc' : 'desc' : 'asc'}
                                                 onClick={handleRequestSort(column.id)}
                                             >
                                                 {column.label}
-                                                {request && request.response && request.response.request.ordenation.orderBy === column.id ? (
+                                                {response && response.request.ordenation.orderBy === column.id ? (
                                                     <span className={classes.mainVisuallyHidden}>
-                                                        {request && request.response.request.ordenation.order === 'ascending' ? 'sorted ascending' : 'sorted descending'}
+                                                        {response.request.ordenation.order === 'ascending' ? 'sorted ascending' : 'sorted descending'}
                                                     </span>
                                                 ) : null}
                                             </TableSortLabel>
@@ -318,7 +330,7 @@ const ApiConnectedTable = props => {
                             </TableRow>
                         </TableHead>
                         <TableBody>
-                            {request && request.response && request.response !== undefined && request.response !== null && request.response.statusCode === 200 ? request.response.data.map((value, index) => {
+                            {response && response.statusCode === 200 ? response.data.map((value, index) => {
                                 const isItemSelected = selectedRows.indexOf(value[config.id]) !== -1;
                                 const labelId = `enhanced-table-checkbox-${index}`;
                                 return (
@@ -353,13 +365,13 @@ const ApiConnectedTable = props => {
                         </TableBody>
                     </Table>
                 </TableContainer>
-                {request && request.response && request.response !== undefined && request.response !== null && request.response.statusCode === 200 ? (
+                {response && response.statusCode === 200 ? (
                     <TablePagination
-                        rowsPerPageOptions={[5, 10, 25]}
+                        rowsPerPageOptions={[5, 10, 25, 50, 100]}
                         component="div"
-                        count={request.response.resultCount}
-                        rowsPerPage={request.response.request.pagination.size}
-                        page={request.response.request.pagination.number - 1}
+                        count={response.resultCount}
+                        rowsPerPage={response.request.pagination.size}
+                        page={response.request.pagination.number - 1}
                         onChangePage={handleChangePage}
                         onChangeRowsPerPage={handleChangeRowsPerPage}
                     />)
@@ -370,14 +382,14 @@ const ApiConnectedTable = props => {
 };
 
 const mapStateToProps = store => ({
-    application: store.applicationState.application
+    application: store.applicationState.application,
+    requests: store.ApiModelWrapperState.requests
 });
 
 const mapDispatchToProps = dispatch =>
     bindActionCreators({
         CreateApiService,
-        CreateApiFilter,
-        GetRequest
+        CreateApiFilter
     }, dispatch);
 
 const connectedComponent = connect(mapStateToProps, mapDispatchToProps)(ApiConnectedTable);

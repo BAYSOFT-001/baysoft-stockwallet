@@ -3,8 +3,6 @@
     REQUEST_DATA, RECEIVE_DATA
 } from './types';
 
-import { SHA256 } from 'crypto-js';
-
 const getUrl = (collection, filterProperties, searchProperties, ordenation, pagination, responseProperties) => {
     let endpoint = '';
 
@@ -168,6 +166,11 @@ const ApiFilter = (id) => {
 
             return this;
         },
+        addResponseProperties(propertyNames) {
+            propertyNames.map(property => this.responseProperties.push(property));
+
+            return this;
+        },
         addResponseProperty(propertyName) {
             this.responseProperties.push(propertyName);
 
@@ -219,23 +222,12 @@ const CreateApiFilter = (id) => (dispatch, getState) => {
     }
 };
 
-const GetRequest = (url) => (dispatch, getState) => {
-    const { ApiModelWrapperState } = getState();
-    const { requests } = ApiModelWrapperState;
-
-    let filteredRequest = requests.filter((request) => request.endPoint === url);
-
-    return filteredRequest && filteredRequest.length > 0 ? filteredRequest[0] : null;
-};
-
 const HttpGet = (endPoint, expires) => (dispatch, getState) => {
     const { ApiModelWrapperState } = getState();
     const { requests } = ApiModelWrapperState;
-    let hash = SHA256(endPoint).toString();
-    console.log(hash);
-    let lastRequest = requests.filter((request) => request.endPoint === endPoint);
+    let lastRequest = requests[endPoint];
     let timeStamp = Date.now();
-    if (lastRequest && lastRequest.length === 1 && lastRequest[0].timeStamp > timeStamp && lastRequest[0].endPoint === endPoint) {
+    if (lastRequest && lastRequest.timeStamp > timeStamp && lastRequest.endPoint === endPoint) {
         return;
     }
 
@@ -249,7 +241,7 @@ const HttpGet = (endPoint, expires) => (dispatch, getState) => {
         .catch(error => console.error(error));
 
     timeStamp += expires;
-    dispatch({ type: REQUEST_DATA, payload: { endPoint: endPoint, timeStamp: timeStamp } });
+    dispatch({ type: REQUEST_DATA, payload: { endPoint: endPoint, timeStamp: timeStamp, response: null } });
 };
 
 const HttpDelete = (endPoint) => (dispatch, getState) => {
@@ -270,6 +262,5 @@ const HttpPut = (endPoint, puttedModel) => (dispatch, getState) => {
 
 export {
     CreateApiService,
-    CreateApiFilter,
-    GetRequest
+    CreateApiFilter
 };

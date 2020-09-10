@@ -3,12 +3,13 @@
 const INITIAL_STATE = {
     apiFilters: [],
     apiServices: [],
-    requests: [],
+    requests: {},
+    testes: {}
 };
 
 export const ApiModelWrapperReducer = (state = INITIAL_STATE, action) => {
     console.log(action.type);
-    console.log(action.payload);
+    //console.log(action.payload);
     switch (action.type) {
         case ApiModelWrapperActionType.types.CREATE_API_SERVICE: return {
             ...state,
@@ -25,25 +26,18 @@ export const ApiModelWrapperReducer = (state = INITIAL_STATE, action) => {
             ]
         };
         case ApiModelWrapperActionType.types.REQUEST_DATA: {
-            let requests = state.requests.filter(request => request.endPoint === action.payload.endPoint);
+            state.requests[action.payload.endPoint] = action.payload;
             return {
                 ...state,
-                requests: [
-                    ...state.requests.filter(request => request.endPoint !== action.payload.endPoint),
-                    {
-                        endPoint: action.payload.endPoint,
-                        timeStamp: action.payload.timeStamp,
-                        response: requests && requests.length > 0 ? requests[0].response : null
-                    }
-                ]
+                requests: { ...state.requests }
             };
         };
-        case ApiModelWrapperActionType.types.RECEIVE_DATA: return {
-            ...state,
-            requests: [
-                ...state.requests.filter(request => request.endPoint !== action.payload.endPoint),
-                action.payload
-            ]
+        case ApiModelWrapperActionType.types.RECEIVE_DATA: {
+            state.requests[action.payload.endPoint] = action.payload;
+            return {
+                ...state,
+                requests: { ...state.requests }
+            };
         };
         default: return state;
     }
