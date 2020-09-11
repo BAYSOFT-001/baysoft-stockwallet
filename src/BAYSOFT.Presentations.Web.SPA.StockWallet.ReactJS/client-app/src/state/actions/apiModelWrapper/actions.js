@@ -2,11 +2,12 @@
 
 import {
     CREATE_API_SERVICE, CREATE_API_FILTER,
-    REQUEST_DATA, RECEIVE_DATA,
-    REQUEST_DELETE_DATA, RECEIVE_DELETE_DATA,
-    REQUEST_PATCH_DATA, RECEIVE_PATCH_DATA,
-    REQUEST_PUT_DATA, RECEIVE_PUT_DATA,
-    REQUEST_POST_DATA, RECEIVE_POST_DATA
+    REQUEST_GETBYFILTER, RECEIVE_GETBYFILTER,
+    REQUEST_GETBYID, RECEIVE_GETBYID,
+    REQUEST_DELETE, RECEIVE_DELETE,
+    REQUEST_PATCH, RECEIVE_PATCH,
+    REQUEST_POST, RECEIVE_POST,
+    REQUEST_PUT, RECEIVE_PUT
 } from './types';
 
 const getUrl = (collection, filterProperties, searchProperties, ordenation, pagination, responseProperties) => {
@@ -84,7 +85,7 @@ const ApiWrapper = (id, collection, expires) => (dispatch) => {
         collection: collection,
         expires: expires,
         GetByFilter(filter) {
-            let url = getUrl(
+            let queryEndPoint = getUrl(
                 this.collection,
                 filter.filterProperties,
                 filter.searchProperties,
@@ -93,44 +94,44 @@ const ApiWrapper = (id, collection, expires) => (dispatch) => {
                 filter.responseProperties
             );
 
-            dispatch(HttpGet(url, this.expires));
+            dispatch(HttpGet(this.collection, queryEndPoint, this.expires));
 
-            return url;
+            return queryEndPoint;
         },
         GetById(id) {
-            let url = `${this.collection}/${id}`;
+            let queryEndPoint = `${this.collection}/${id}`;
 
-            dispatch(HttpGet(url, this.expires));
+            dispatch(HttpGetByID(this.collection, queryEndPoint, this.expires));
 
-            return url;
+            return queryEndPoint;
         },
         Delete(id) {
-            let url = `${this.collection}/${id}`;
+            let commandEndPoint = `${this.collection}/${id}`;
 
-            dispatch(HttpDelete(url));
+            dispatch(HttpDelete(this.collection, commandEndPoint));
 
-            return url;
+            return commandEndPoint;
         },
         Patch(id, patchModel) {
-            let url = `${this.collection}/${id}`;
+            let commandEndPoint = `${this.collection}/${id}`;
 
-            dispatch(HttpPatch(url, patchModel, this.expires));
+            dispatch(HttpPatch(this.collection, commandEndPoint, patchModel, this.expires));
 
-            return url;
+            return commandEndPoint;
         },
         Post(postModel, returnUrl) {
-            let url = `${this.collection}`;
+            let commandEndPoint = `${this.collection}`;
 
-            dispatch(HttpPost(url, postModel, this.expires, returnUrl));
+            dispatch(HttpPost(this.collection, commandEndPoint, postModel, this.expires, returnUrl));
 
-            return url;
+            return commandEndPoint;
         },
         Put(id, putModel) {
-            let url = `${this.collection}/${id}`;
+            let commandEndPoint = `${this.collection}/${id}`;
 
-            dispatch(HttpPut(url, putModel, this.expires));
+            dispatch(HttpPut(this.collection, commandEndPoint, putModel, this.expires));
 
-            return url;
+            return commandEndPoint;
         }
     }
 };
@@ -228,42 +229,62 @@ const CreateApiFilter = (id) => (dispatch, getState) => {
     }
 };
 
-const HttpGet = (endPoint, expires) => (dispatch, getState) => {
+const HttpGet = (_collection, _endPoint, _expires) => (dispatch, getState) => {
     const { ApiModelWrapperState } = getState();
-    const { requests } = ApiModelWrapperState;
-    let lastRequest = requests[endPoint];
+    const { queries } = ApiModelWrapperState;
+    const { collections } = queries;
+
+    let collection = collections[_endPoint];
     let timeStamp = Date.now();
-    if (lastRequest && lastRequest.timeStamp > timeStamp && lastRequest.endPoint === endPoint) {
+    if (collection && collection.timeStamp > timeStamp && collection.endPoint === _endPoint) {
         return;
     }
 
-    fetch(endPoint)
+    fetch(_endPoint)
         .then(response => response.json())
         .then(data => {
             let timeStamp = Date.now();
-            timeStamp += expires;
-            dispatch({ type: RECEIVE_DATA, payload: { endPoint: endPoint, timeStamp: timeStamp, response: data } });
+            timeStamp += _expires;
+            dispatch({ type: RECEIVE_GETBYFILTER, payload: { collection: _collection, endPoint: _endPoint, timeStamp: timeStamp, response: data } });
         })
         .catch(error => console.error(error));
 
-    timeStamp += expires;
-    dispatch({ type: REQUEST_DATA, payload: { endPoint: endPoint, timeStamp: timeStamp, response: null } });
+    timeStamp += _expires;
+    dispatch({ type: REQUEST_GETBYFILTER, payload: { collection: _collection, endPoint: _endPoint, timeStamp: timeStamp, response: null } });
 };
-
-const HttpDelete = (endPoint) => (dispatch, getState) => {
-
-};
-
-const HttpPatch = (endPoint, patchedModel) => (dispatch, getState) => {
-
-};
-
-const HttpPost = (endPoint, postedModel, expires, returnUrl) => (dispatch, getState) => {
+const HttpGetByID = (_collection, _endPoint, _expires) => (dispatch, getState) => {
     const { ApiModelWrapperState } = getState();
-    const { posts } = ApiModelWrapperState;
-    let lastRequest = posts[endPoint];
+    const { queries } = ApiModelWrapperState;
+    const { entities } = queries;
+
+    let entity = entities[_endPoint];
     let timeStamp = Date.now();
-    if (lastRequest && lastRequest.timeStamp > timeStamp && lastRequest.endPoint === endPoint) {
+    if (entity && entity.timeStamp > timeStamp && entity.endPoint === _endPoint) {
+        return;
+    }
+
+    fetch(_endPoint)
+        .then(response => response.json())
+        .then(data => {
+            let timeStamp = Date.now();
+            timeStamp += _expires;
+            dispatch({ type: RECEIVE_GETBYID, payload: { collection: _collection, endPoint: _endPoint, timeStamp: timeStamp, response: data } });
+        })
+        .catch(error => console.error(error));
+
+    timeStamp += _expires;
+    dispatch({ type: REQUEST_GETBYID, payload: { collection: _collection, endPoint: _endPoint, timeStamp: timeStamp, response: null } });
+};
+
+const HttpDelete = (_collection, _endPoint, _expires, _returnUrl) => (dispatch, getState) => {
+    const { ApiModelWrapperState } = getState();
+    const { commands } = ApiModelWrapperState;
+    const { deletes } = commands;
+
+    let deleteCommand = deletes[_endPoint];
+
+    let timeStamp = Date.now();
+    if (deleteCommand && deleteCommand.timeStamp > timeStamp && deleteCommand.endPoint === _endPoint) {
         return;
     }
 
@@ -278,17 +299,106 @@ const HttpPost = (endPoint, postedModel, expires, returnUrl) => (dispatch, getSt
 
     setTimeout(() => {
         let timeStamp = Date.now();
-        timeStamp += expires;
-        dispatch({ type: RECEIVE_POST_DATA, payload: { endPoint: endPoint, data: null } });
-        dispatch(push(returnUrl));
+        timeStamp += _expires;
+        dispatch({ type: RECEIVE_DELETE, payload: { collection: _collection, endPoint: _endPoint } });
+        dispatch(push(_returnUrl));
     }, 3000);
 
-    timeStamp += expires;
-    dispatch({ type: REQUEST_POST_DATA, payload: { endPoint: endPoint, data: postedModel } });
+    timeStamp += _expires;
+    dispatch({ type: REQUEST_DELETE, payload: { collection: _collection, endPoint: _endPoint } });
 };
 
-const HttpPut = (endPoint, puttedModel) => (dispatch, getState) => {
+const HttpPatch = (_collection, _endPoint, _patchedModel, _expires, _returnUrl) => (dispatch, getState) => {
+    const { ApiModelWrapperState } = getState();
+    const { commands } = ApiModelWrapperState;
+    const { patchs } = commands;
 
+    let patchCommand = patchs[_endPoint];
+    let timeStamp = Date.now();
+    if (patchCommand && patchCommand.timeStamp > timeStamp && patchCommand.endPoint === _endPoint) {
+        return;
+    }
+
+    //fetch(endPoint)
+    //    .then(response => response.json())
+    //    .then(data => {
+    //        let timeStamp = Date.now();
+    //        timeStamp += expires;
+    //        dispatch({ type: RECEIVE_POST_DATA, payload: { endPoint: endPoint, timeStamp: timeStamp, response: data } });
+    //    })
+    //    .catch(error => console.error(error));
+
+    setTimeout(() => {
+        let timeStamp = Date.now();
+        timeStamp += _expires;
+        dispatch({ type: RECEIVE_PATCH, payload: { collection: _collection, endPoint: _endPoint, data: null } });
+        dispatch(push(_returnUrl));
+    }, 3000);
+
+    timeStamp += _expires;
+    dispatch({ type: REQUEST_PATCH, payload: { collection: _collection, endPoint: _endPoint, data: _patchedModel } });
+};
+
+const HttpPost = (_collection, _endPoint, _postedModel, _expires, _returnUrl) => (dispatch, getState) => {
+    const { ApiModelWrapperState } = getState();
+    const { commands } = ApiModelWrapperState;
+    const { posts } = commands;
+
+    let postCommand = posts[_endPoint];
+    let timeStamp = Date.now();
+    if (postCommand && postCommand.timeStamp > timeStamp && postCommand.endPoint === _endPoint) {
+        return;
+    }
+
+    //fetch(endPoint)
+    //    .then(response => response.json())
+    //    .then(data => {
+    //        let timeStamp = Date.now();
+    //        timeStamp += expires;
+    //        dispatch({ type: RECEIVE_POST_DATA, payload: { endPoint: endPoint, timeStamp: timeStamp, response: data } });
+    //    })
+    //    .catch(error => console.error(error));
+
+    setTimeout(() => {
+        let timeStamp = Date.now();
+        timeStamp += _expires;
+        dispatch({ type: RECEIVE_POST, payload: { collection: _collection, endPoint: _endPoint, data: null } });
+        dispatch(push(_returnUrl));
+    }, 3000);
+
+    timeStamp += _expires;
+    dispatch({ type: REQUEST_POST, payload: { collection: _collection, endPoint: _endPoint, data: _postedModel } });
+};
+
+const HttpPut = (_collection, _endPoint, _puttedModel, _expires, _returnUrl) => (dispatch, getState) => {
+    const { ApiModelWrapperState } = getState();
+    const { commands } = ApiModelWrapperState;
+    const { puts } = commands;
+
+    let putCommnand = puts[_endPoint];
+    let timeStamp = Date.now();
+    if (putCommnand && putCommnand.timeStamp > timeStamp && putCommnand.endPoint === _endPoint) {
+        return;
+    }
+
+    //fetch(endPoint)
+    //    .then(response => response.json())
+    //    .then(data => {
+    //        let timeStamp = Date.now();
+    //        timeStamp += expires;
+    //        dispatch({ type: RECEIVE_POST_DATA, payload: { endPoint: endPoint, timeStamp: timeStamp, response: data } });
+    //    })
+    //    .catch(error => console.error(error));
+
+    setTimeout(() => {
+        let timeStamp = Date.now();
+        timeStamp += _expires;
+        dispatch({ type: RECEIVE_PUT, payload: { collection: _collection, endPoint: _endPoint, data: null } });
+        dispatch(push(_returnUrl));
+    }, 3000);
+
+    timeStamp += _expires;
+    dispatch({ type: REQUEST_PUT, payload: { collection: _collection, endPoint: _endPoint, data: _puttedModel } });
 };
 
 export {

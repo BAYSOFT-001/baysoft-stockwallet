@@ -3,19 +3,21 @@
 const INITIAL_STATE = {
     apiFilters: [],
     apiServices: [],
-    requests: {},
-    deletes: {},
-    patchs: {},
-    posts: {},
-    puts: {},
-    testes: [],
+    queries: {
+        collections: {},
+        entities: {}
+    },
+    commands: {
+        deletes: {},
+        patchs: {},
+        posts: {},
+        puts: {}
+    }
 };
 
 export const ApiModelWrapperReducer = (state = INITIAL_STATE, action) => {
     console.log(action.type);
     console.log(action.payload);
-    console.log(state.requests);
-    state.testes.map(teste => console.log(teste.endPoint));
     switch (action.type) {
         case ApiModelWrapperActionType.types.CREATE_API_SERVICE: return {
             ...state,
@@ -31,76 +33,148 @@ export const ApiModelWrapperReducer = (state = INITIAL_STATE, action) => {
                 action.payload
             ]
         };
-        case ApiModelWrapperActionType.types.REQUEST_DATA: {
-            state.requests[action.payload.endPoint] = action.payload;
+        case ApiModelWrapperActionType.types.REQUEST_GETBYFILTER: {
+            state.queries.collections[action.payload.endPoint] = action.payload;
             return {
                 ...state,
-                requests: { ...state.requests }
+                queries: {
+                    ...state.queries,
+                    collections: {
+                        ...state.queries.collections
+                    }
+                }
             };
         };
-        case ApiModelWrapperActionType.types.RECEIVE_DATA: {
-            state.requests[action.payload.endPoint] = action.payload;
-            state.testes[action.payload.endPoint] = action.payload.endPoint;
+        case ApiModelWrapperActionType.types.RECEIVE_GETBYFILTER: {
+            state.queries.collections[action.payload.endPoint] = action.payload;
             return {
                 ...state,
-                requests: { ...state.requests },
-                testes: [...state.testes]
+                queries: {
+                    ...state.queries,
+                    collections: {
+                        ...state.queries.collections
+                    }
+                }
             };
         };
-        case ApiModelWrapperActionType.types.REQUEST_DELETE_DATA: {
-            state.deletes[action.payload.endPoint] = action.payload;
+        case ApiModelWrapperActionType.types.REQUEST_GETBYID: {
+            state.queries.entities[action.payload.endPoint] = action.payload;
             return {
                 ...state,
-                deletes: { ...state.deletes }
+                queries: {
+                    ...state.queries,
+                    entities: {
+                        ...state.queries.entities
+                    }
+                }
             };
         };
-        case ApiModelWrapperActionType.types.RECEIVE_DELETE_DATA: {
-            state.deletes[action.payload.endPoint] = null;
+        case ApiModelWrapperActionType.types.RECEIVE_GETBYID: {
+            state.queries.entities[action.payload.endPoint] = action.payload;
             return {
                 ...state,
-                deletes: { ...state.deletes }
+                queries: {
+                    ...state.queries,
+                    entities: {
+                        ...state.queries.entities
+                    }
+                }
             };
         };
-        case ApiModelWrapperActionType.types.REQUEST_PATCH_DATA: {
-            state.patchs[action.payload.endPoint] = action.payload;
+        case ApiModelWrapperActionType.types.REQUEST_DELETE: {
+            state.commands.deletes[action.payload.endPoint] = action.payload;
             return {
                 ...state,
-                patchs: { ...state.patchs }
+                commands: {
+                    ...state.commands,
+                    deletes: {
+                        ...state.commands.deletes
+                    }
+                }
             };
         };
-        case ApiModelWrapperActionType.types.RECEIVE_PATCH_DATA: {
-            state.patchs[action.payload.endPoint] = null;
+        case ApiModelWrapperActionType.types.RECEIVE_DELETE: {
+            state.commands.deletes[action.payload.endPoint] = action.payload;
             return {
                 ...state,
-                patchs: { ...state.patchs }
+                commands: {
+                    ...state.commands,
+                    deletes: {
+                        ...state.commands.deletes
+                    }
+                }
             };
         };
-        case ApiModelWrapperActionType.types.REQUEST_POST_DATA: {
-            state.posts[action.payload.endPoint] = action.payload;
+        case ApiModelWrapperActionType.types.REQUEST_PATCH: {
+            state.commands.patchs[action.payload.endPoint] = action.payload;
             return {
                 ...state,
-                posts: { ...state.posts }
+                commands: {
+                    ...state.commands,
+                    patchs: {
+                        ...state.commands.patchs
+                    }
+                }
             };
         };
-        case ApiModelWrapperActionType.types.RECEIVE_POST_DATA: {
-            state.posts[action.payload.endPoint] = null;
+        case ApiModelWrapperActionType.types.RECEIVE_PATCH: {
+            state.commands.patchs[action.payload.endPoint] = action.payload;
             return {
                 ...state,
-                posts: { ...state.posts }
+                commands: {
+                    ...state.commands,
+                    patchs: {
+                        ...state.commands.patchs
+                    }
+                }
             };
         };
-        case ApiModelWrapperActionType.types.REQUEST_PUT_DATA: {
-            state.puts[action.payload.endPoint] = action.payload;
+        case ApiModelWrapperActionType.types.REQUEST_POST: {
+            state.commands.posts[action.payload.endPoint] = action.payload;
             return {
                 ...state,
-                puts: { ...state.puts }
+                commands: {
+                    ...state.commands,
+                    posts: {
+                        ...state.commands.posts
+                    }
+                }
             };
         };
-        case ApiModelWrapperActionType.types.RECEIVE_PUT_DATA: {
-            state.puts[action.payload.endPoint] = null;
+        case ApiModelWrapperActionType.types.RECEIVE_POST: {
+            state.commands.posts[action.payload.endPoint] = action.payload;
             return {
                 ...state,
-                puts: { ...state.puts }
+                commands: {
+                    ...state.commands,
+                    posts: {
+                        ...state.commands.posts
+                    }
+                }
+            };
+        };
+        case ApiModelWrapperActionType.types.REQUEST_PUT: {
+            state.commands.puts[action.payload.endPoint] = action.payload;
+            return {
+                ...state,
+                commands: {
+                    ...state.commands,
+                    puts: {
+                        ...state.commands.puts
+                    }
+                }
+            };
+        };
+        case ApiModelWrapperActionType.types.RECEIVE_PUT: {
+            state.commands.puts[action.payload.endPoint] = action.payload;
+            return {
+                ...state,
+                commands: {
+                    ...state.commands,
+                    puts: {
+                        ...state.commands.puts
+                    }
+                }
             };
         };
         default: return state;

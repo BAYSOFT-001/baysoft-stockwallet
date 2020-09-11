@@ -117,11 +117,11 @@ const useStyles = makeStyles(theme => ({
 
 const ApiConnectedTable = props => {
     const { config } = props;
-    const { requests } = props;
+    const { collections } = props;
     const classes = useStyles();
     const [requestUrl, setRequestUrl] = useState(config.endPoint);
     const [response, setResponse] = useState(null);
-
+    
     const api = props.CreateApiService(`${config.configId}-service`, config.endPoint);
     const filter = props.CreateApiFilter(`${config.configId}-filter`)
         .clear()
@@ -215,11 +215,18 @@ const ApiConnectedTable = props => {
         loadData();
     });
     useEffect(() => {
-        if (requests && requests[requestUrl] && requests[requestUrl].response) {
-            setResponse(requests[requestUrl].response);
-            setPageRowCount(requests[requestUrl].response.data.length);
+        console.log(collections);
+        console.log('useEffect => collections')
+        console.log(collections ? true : false);
+        console.log(collections && collections[requestUrl] ? true : false);
+        console.log(collections && collections[requestUrl] && collections[requestUrl].response ? true : false);
+
+        if (collections && collections[requestUrl] && collections[requestUrl].response) {
+            console.log('useEffect => collections => IF')
+            setResponse(collections[requestUrl].response);
+            setPageRowCount(collections[requestUrl].response.data.length);
         }
-    }, [requests, requestUrl])
+    }, [collections, requestUrl])
     useEffect(() => {
         setHasAllLinesChecked(selectedRows.length === pageRowCount);
         setHasLinesChecked(selectedRows.length < pageRowCount && selectedRows.length > 0);
@@ -386,7 +393,7 @@ const ApiConnectedTable = props => {
 
 const mapStateToProps = store => ({
     application: store.applicationState.application,
-    requests: store.ApiModelWrapperState.requests
+    collections: store.ApiModelWrapperState.queries.collections
 });
 
 const mapDispatchToProps = dispatch =>

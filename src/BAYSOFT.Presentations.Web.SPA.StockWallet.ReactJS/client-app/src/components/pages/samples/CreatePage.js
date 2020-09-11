@@ -48,9 +48,7 @@ const useStyles = makeStyles(theme => ({
 
 const CreatePage = (props) => {
     const returnUrl = '/samples';
-    const { requests } = props;
     const classes = useStyles();
-    const [requestUrl, setRequestUrl] = useState('');
     const [sample, setSample] = useState({ description: '' });
 
     const api = props.CreateApiService(`samples-service`, 'https://localhost:4101/api/samples');
@@ -105,8 +103,7 @@ const CreatePage = (props) => {
 };
 
 const mapStateToProps = store => ({
-    application: store.applicationState.application,
-    requests: store.ApiModelWrapperState.requests
+    application: store.applicationState.application
 });
 
 const mapDispatchToProps = dispatch =>
