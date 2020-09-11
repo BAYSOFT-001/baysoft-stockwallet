@@ -105,17 +105,17 @@ const ApiWrapper = (id, collection, expires) => (dispatch) => {
 
             return queryEndPoint;
         },
-        Delete(id) {
+        Delete(id, returnUrl) {
             let commandEndPoint = `${this.collection}/${id}`;
 
-            dispatch(HttpDelete(this.collection, commandEndPoint));
+            dispatch(HttpDelete(this.collection, commandEndPoint, returnUrl));
 
             return commandEndPoint;
         },
-        Patch(id, patchModel) {
+        Patch(id, patchModel, returnUrl) {
             let commandEndPoint = `${this.collection}/${id}`;
 
-            dispatch(HttpPatch(this.collection, commandEndPoint, patchModel, this.expires));
+            dispatch(HttpPatch(this.collection, commandEndPoint, patchModel, this.expires, returnUrl));
 
             return commandEndPoint;
         },
@@ -126,10 +126,10 @@ const ApiWrapper = (id, collection, expires) => (dispatch) => {
 
             return commandEndPoint;
         },
-        Put(id, putModel) {
+        Put(id, putModel, returnUrl) {
             let commandEndPoint = `${this.collection}/${id}`;
 
-            dispatch(HttpPut(this.collection, commandEndPoint, putModel, this.expires));
+            dispatch(HttpPut(this.collection, commandEndPoint, putModel, this.expires, returnUrl));
 
             return commandEndPoint;
         }
@@ -300,12 +300,12 @@ const HttpDelete = (_collection, _endPoint, _expires, _returnUrl) => (dispatch, 
     setTimeout(() => {
         let timeStamp = Date.now();
         timeStamp += _expires;
-        dispatch({ type: RECEIVE_DELETE, payload: { collection: _collection, endPoint: _endPoint } });
+        dispatch({ type: RECEIVE_DELETE, payload: { collection: _collection, endPoint: _endPoint, timeStamp: timeStamp,  } });
         dispatch(push(_returnUrl));
     }, 3000);
 
     timeStamp += _expires;
-    dispatch({ type: REQUEST_DELETE, payload: { collection: _collection, endPoint: _endPoint } });
+    dispatch({ type: REQUEST_DELETE, payload: { collection: _collection, endPoint: _endPoint, timeStamp: timeStamp,  } });
 };
 
 const HttpPatch = (_collection, _endPoint, _patchedModel, _expires, _returnUrl) => (dispatch, getState) => {
@@ -331,12 +331,12 @@ const HttpPatch = (_collection, _endPoint, _patchedModel, _expires, _returnUrl) 
     setTimeout(() => {
         let timeStamp = Date.now();
         timeStamp += _expires;
-        dispatch({ type: RECEIVE_PATCH, payload: { collection: _collection, endPoint: _endPoint, data: null } });
+        dispatch({ type: RECEIVE_PATCH, payload: { collection: _collection, endPoint: _endPoint, timeStamp: timeStamp,  data: null } });
         dispatch(push(_returnUrl));
     }, 3000);
 
     timeStamp += _expires;
-    dispatch({ type: REQUEST_PATCH, payload: { collection: _collection, endPoint: _endPoint, data: _patchedModel } });
+    dispatch({ type: REQUEST_PATCH, payload: { collection: _collection, endPoint: _endPoint, timeStamp: timeStamp,  data: _patchedModel } });
 };
 
 const HttpPost = (_collection, _endPoint, _postedModel, _expires, _returnUrl) => (dispatch, getState) => {
@@ -362,12 +362,12 @@ const HttpPost = (_collection, _endPoint, _postedModel, _expires, _returnUrl) =>
     setTimeout(() => {
         let timeStamp = Date.now();
         timeStamp += _expires;
-        dispatch({ type: RECEIVE_POST, payload: { collection: _collection, endPoint: _endPoint, data: null } });
+        dispatch({ type: RECEIVE_POST, payload: { collection: _collection, endPoint: _endPoint, timeStamp: timeStamp,  data: null } });
         dispatch(push(_returnUrl));
     }, 3000);
 
     timeStamp += _expires;
-    dispatch({ type: REQUEST_POST, payload: { collection: _collection, endPoint: _endPoint, data: _postedModel } });
+    dispatch({ type: REQUEST_POST, payload: { collection: _collection, endPoint: _endPoint, timeStamp: timeStamp,  data: _postedModel } });
 };
 
 const HttpPut = (_collection, _endPoint, _puttedModel, _expires, _returnUrl) => (dispatch, getState) => {
@@ -393,12 +393,12 @@ const HttpPut = (_collection, _endPoint, _puttedModel, _expires, _returnUrl) => 
     setTimeout(() => {
         let timeStamp = Date.now();
         timeStamp += _expires;
-        dispatch({ type: RECEIVE_PUT, payload: { collection: _collection, endPoint: _endPoint, data: null } });
+        dispatch({ type: RECEIVE_PUT, payload: { collection: _collection, endPoint: _endPoint, timeStamp: timeStamp,  data: null } });
         dispatch(push(_returnUrl));
     }, 3000);
 
     timeStamp += _expires;
-    dispatch({ type: REQUEST_PUT, payload: { collection: _collection, endPoint: _endPoint, data: _puttedModel } });
+    dispatch({ type: REQUEST_PUT, payload: { collection: _collection, endPoint: _endPoint, timeStamp: timeStamp,  data: _puttedModel } });
 };
 
 export {

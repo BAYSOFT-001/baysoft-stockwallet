@@ -23,7 +23,7 @@ namespace BAYSOFT.Core.Middleware
             services.AddMediatR(assembly);
 
             services.AddModelWrapper()
-                .AddDefaultReturnedCollectionSize(10)
+                .AddDefaultReturnedCollectionSize(5)
                 .AddMinimumReturnedCollectionSize(1)
                 .AddMaximumReturnedCollectionSize(100)
                 .AddQueryTermsMinimumSize(3)

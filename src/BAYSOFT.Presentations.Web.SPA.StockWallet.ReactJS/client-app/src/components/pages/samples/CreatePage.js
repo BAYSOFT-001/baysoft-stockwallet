@@ -92,7 +92,7 @@ const CreatePage = (props) => {
                     <Grid container spacing={0} justify="flex-end" >
                         <Grid item lg={2} md={4} xs={6}>
                             <FormControl fullWidth className={classes.formMargin} >
-                                <Button variant="contained" color="primary" href="#contained-buttons" onClick={handleClickSave}>Save</Button>
+                                <Button variant="contained" color="primary" onClick={handleClickSave}>Save</Button>
                             </FormControl>
                         </Grid>
                     </Grid>

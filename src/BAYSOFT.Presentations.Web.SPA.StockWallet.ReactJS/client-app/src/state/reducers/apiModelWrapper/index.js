@@ -14,10 +14,81 @@ const INITIAL_STATE = {
         puts: {}
     }
 };
-
+const setQueryCollection = (state, payload) => {
+    state.queries.collections[payload.endPoint] = payload;
+    return {
+        ...state,
+        queries: {
+            ...state.queries,
+            collections: {
+                ...state.queries.collections
+            }
+        }
+    };
+};
+const setQueryEntity = (state, payload) => {
+    state.queries.entities[payload.endPoint] = payload;
+    return {
+        ...state,
+        queries: {
+            ...state.queries,
+            entities: {
+                ...state.queries.entities
+            }
+        }
+    };
+};
+const setCommandDelete = (state, payload) => {
+    state.commands.deletes[payload.endPoint] = payload;
+    return {
+        ...state,
+        commands: {
+            ...state.commands,
+            deletes: {
+                ...state.commands.deletes
+            }
+        }
+    };
+};
+const setCommandPatch = (state, payload) => {
+    state.commands.patchs[payload.endPoint] = payload;
+    return {
+        ...state,
+        commands: {
+            ...state.commands,
+            patchs: {
+                ...state.commands.patchs
+            }
+        }
+    };
+};
+const setCommandPost = (state, payload) => {
+    state.commands.posts[payload.endPoint] = payload;
+    return {
+        ...state,
+        commands: {
+            ...state.commands,
+            posts: {
+                ...state.commands.posts
+            }
+        }
+    };
+};
+const setCommandPut = (state, payload) => {
+    state.commands.puts[payload.endPoint] = payload;
+    return {
+        ...state,
+        commands: {
+            ...state.commands,
+            puts: {
+                ...state.commands.puts
+            }
+        }
+    };
+};
 export const ApiModelWrapperReducer = (state = INITIAL_STATE, action) => {
     console.log(action.type);
-    console.log(action.payload);
+    //console.log(action.payload);
     switch (action.type) {
         case ApiModelWrapperActionType.types.CREATE_API_SERVICE: return {
             ...state,
@@ -33,150 +104,18 @@ export const ApiModelWrapperReducer = (state = INITIAL_STATE, action) => {
                 action.payload
             ]
         };
-        case ApiModelWrapperActionType.types.REQUEST_GETBYFILTER: {
-            state.queries.collections[action.payload.endPoint] = action.payload;
-            return {
-                ...state,
-                queries: {
-                    ...state.queries,
-                    collections: {
-                        ...state.queries.collections
-                    }
-                }
-            };
-        };
-        case ApiModelWrapperActionType.types.RECEIVE_GETBYFILTER: {
-            state.queries.collections[action.payload.endPoint] = action.payload;
-            return {
-                ...state,
-                queries: {
-                    ...state.queries,
-                    collections: {
-                        ...state.queries.collections
-                    }
-                }
-            };
-        };
-        case ApiModelWrapperActionType.types.REQUEST_GETBYID: {
-            state.queries.entities[action.payload.endPoint] = action.payload;
-            return {
-                ...state,
-                queries: {
-                    ...state.queries,
-                    entities: {
-                        ...state.queries.entities
-                    }
-                }
-            };
-        };
-        case ApiModelWrapperActionType.types.RECEIVE_GETBYID: {
-            state.queries.entities[action.payload.endPoint] = action.payload;
-            return {
-                ...state,
-                queries: {
-                    ...state.queries,
-                    entities: {
-                        ...state.queries.entities
-                    }
-                }
-            };
-        };
-        case ApiModelWrapperActionType.types.REQUEST_DELETE: {
-            state.commands.deletes[action.payload.endPoint] = action.payload;
-            return {
-                ...state,
-                commands: {
-                    ...state.commands,
-                    deletes: {
-                        ...state.commands.deletes
-                    }
-                }
-            };
-        };
-        case ApiModelWrapperActionType.types.RECEIVE_DELETE: {
-            state.commands.deletes[action.payload.endPoint] = action.payload;
-            return {
-                ...state,
-                commands: {
-                    ...state.commands,
-                    deletes: {
-                        ...state.commands.deletes
-                    }
-                }
-            };
-        };
-        case ApiModelWrapperActionType.types.REQUEST_PATCH: {
-            state.commands.patchs[action.payload.endPoint] = action.payload;
-            return {
-                ...state,
-                commands: {
-                    ...state.commands,
-                    patchs: {
-                        ...state.commands.patchs
-                    }
-                }
-            };
-        };
-        case ApiModelWrapperActionType.types.RECEIVE_PATCH: {
-            state.commands.patchs[action.payload.endPoint] = action.payload;
-            return {
-                ...state,
-                commands: {
-                    ...state.commands,
-                    patchs: {
-                        ...state.commands.patchs
-                    }
-                }
-            };
-        };
-        case ApiModelWrapperActionType.types.REQUEST_POST: {
-            state.commands.posts[action.payload.endPoint] = action.payload;
-            return {
-                ...state,
-                commands: {
-                    ...state.commands,
-                    posts: {
-                        ...state.commands.posts
-                    }
-                }
-            };
-        };
-        case ApiModelWrapperActionType.types.RECEIVE_POST: {
-            state.commands.posts[action.payload.endPoint] = action.payload;
-            return {
-                ...state,
-                commands: {
-                    ...state.commands,
-                    posts: {
-                        ...state.commands.posts
-                    }
-                }
-            };
-        };
-        case ApiModelWrapperActionType.types.REQUEST_PUT: {
-            state.commands.puts[action.payload.endPoint] = action.payload;
-            return {
-                ...state,
-                commands: {
-                    ...state.commands,
-                    puts: {
-                        ...state.commands.puts
-                    }
-                }
-            };
-        };
-        case ApiModelWrapperActionType.types.RECEIVE_PUT: {
-            state.commands.puts[action.payload.endPoint] = action.payload;
-            return {
-                ...state,
-                commands: {
-                    ...state.commands,
-                    puts: {
-                        ...state.commands.puts
-                    }
-                }
-            };
-        };
+        case ApiModelWrapperActionType.types.REQUEST_GETBYFILTER: return setQueryCollection(state, action.payload);
+        case ApiModelWrapperActionType.types.RECEIVE_GETBYFILTER: return setQueryCollection(state, action.payload);
+        case ApiModelWrapperActionType.types.REQUEST_GETBYID: return setQueryEntity(state, action.payload);
+        case ApiModelWrapperActionType.types.RECEIVE_GETBYID: return setQueryEntity(state, action.payload);
+        case ApiModelWrapperActionType.types.REQUEST_DELETE: return setCommandDelete(state, action.payload);
+        case ApiModelWrapperActionType.types.RECEIVE_DELETE: return setCommandDelete(state, action.payload);
+        case ApiModelWrapperActionType.types.REQUEST_PATCH: return setCommandPatch(state, action.payload);
+        case ApiModelWrapperActionType.types.RECEIVE_PATCH: return setCommandPatch(state, action.payload);
+        case ApiModelWrapperActionType.types.REQUEST_POST: return setCommandPost(state, action.payload);
+        case ApiModelWrapperActionType.types.RECEIVE_POST: return setCommandPost(state, action.payload);
+        case ApiModelWrapperActionType.types.REQUEST_PUT: return setCommandPut(state, action.payload);
+        case ApiModelWrapperActionType.types.RECEIVE_PUT: return setCommandPut(state, action.payload);
         default: return state;
     }
 }

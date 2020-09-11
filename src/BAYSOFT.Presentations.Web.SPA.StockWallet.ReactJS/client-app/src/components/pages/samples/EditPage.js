@@ -43,7 +43,8 @@ const useStyles = makeStyles(theme => ({
 }));
 
 const EditPage = (props) => {
-    const { requests } = props;
+    const returnUrl = '/samples';
+    const { entities } = props;
     const classes = useStyles();
     const [requestUrl, setRequestUrl] = useState('');
     const [sample, setSample] = useState({ description: '' });
@@ -51,7 +52,7 @@ const EditPage = (props) => {
     const api = props.CreateApiService(`samples-service`, 'https://localhost:4101/api/samples');
 
     const handleClickBack = (event) => {
-        props.push('/samples');
+        props.push(returnUrl);
     };
 
     const handleChange = (prop) => (event) => {
@@ -59,17 +60,17 @@ const EditPage = (props) => {
     };
 
     const handleClickSave = () => {
-        api.Put(props.match.params.id, sample);
+        api.Put(props.match.params.id, sample, returnUrl);
     };
 
     useEffect(() => {
         setRequestUrl(api.GetById(props.match.params.id));
-    });
+    }, [api, props.match.params.id]);
     useEffect(() => {
-        if (requests && requests[requestUrl] && requests[requestUrl].response) {
-            setSample(requests[requestUrl].response.data);
+        if (entities && entities[requestUrl] && entities[requestUrl].response) {
+            setSample(entities[requestUrl].response.data);
         }
-    }, [requests, requestUrl]);
+    }, [entities, requestUrl]);
 
     return (
         <Templates.MaterialTemplate.DashboardLayout>
@@ -96,7 +97,7 @@ const EditPage = (props) => {
                     <Grid container spacing={0} justify="flex-end" >
                         <Grid item lg={2} md={4} xs={6}>
                             <FormControl fullWidth className={classes.formMargin} >
-                                <Button variant="contained" color="primary" href="#contained-buttons">Save</Button>
+                                <Button variant="contained" color="primary" onClick={handleClickSave}>Save</Button>
                             </FormControl>
                         </Grid>
                     </Grid>
@@ -108,7 +109,7 @@ const EditPage = (props) => {
 
 const mapStateToProps = store => ({
     application: store.applicationState.application,
-    requests: store.ApiModelWrapperState.requests
+    entities: store.ApiModelWrapperState.queries.entities,
 });
 
 const mapDispatchToProps = dispatch =>

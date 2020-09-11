@@ -123,11 +123,7 @@ const ApiConnectedTable = props => {
     const [response, setResponse] = useState(null);
     
     const api = props.CreateApiService(`${config.configId}-service`, config.endPoint);
-    const filter = props.CreateApiFilter(`${config.configId}-filter`)
-        .clear()
-        .setOrdenation(config.id, 'ascending')
-        .setPagination(config.defaultPageSize, 0)
-        .addResponseProperties([config.id, ...config.columns.map(column => column.id)]);
+    const filter = props.CreateApiFilter(`${config.configId}-filter`);
 
     const [query, setQuery] = useState('');
     const [selectedRows, setSelectedRows] = useState([]);
@@ -137,7 +133,6 @@ const ApiConnectedTable = props => {
     const emptyRows = response ? response.request.pagination.size - response.data.length : config.defaultPageSize;
     const loadData = () => {
         let url = api.GetByFilter(filter);
-        console.log(url);
         setRequestUrl(url);
     };
     const debounceQuery = useCallback(debounce((value) => {
@@ -157,7 +152,6 @@ const ApiConnectedTable = props => {
     const handleSelectAllClick = (event) => {
         if (event.target.checked) {
             const newSelecteds = response.data.map((value) => value[config.id]);
-            console.log(newSelecteds);
             setSelectedRows(newSelecteds);
             setHasAllLinesChecked(true);
             setHasLinesChecked(false);
@@ -215,14 +209,7 @@ const ApiConnectedTable = props => {
         loadData();
     });
     useEffect(() => {
-        console.log(collections);
-        console.log('useEffect => collections')
-        console.log(collections ? true : false);
-        console.log(collections && collections[requestUrl] ? true : false);
-        console.log(collections && collections[requestUrl] && collections[requestUrl].response ? true : false);
-
         if (collections && collections[requestUrl] && collections[requestUrl].response) {
-            console.log('useEffect => collections => IF')
             setResponse(collections[requestUrl].response);
             setPageRowCount(collections[requestUrl].response.data.length);
         }

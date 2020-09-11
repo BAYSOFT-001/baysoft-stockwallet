@@ -50,6 +50,10 @@ const IndexPage = (props) => {
             <Typography noWrap>api/subsectors</Typography>
             <Button variant="contained" color="primary" onClick={handleClickGetByFilter('subsectors', 'subs')}>GET api/subsectors</Button>
             <Button variant="contained" color="primary" onClick={handleClickGetByID('subsectors', 1)}>GET api/subsectors/1</Button>
+            <hr />
+            <Typography noWrap>api/stocks</Typography>
+            <Button variant="contained" color="primary" onClick={handleClickGetByFilter('stocks', 'subs')}>GET api/stocks</Button>
+            <Button variant="contained" color="primary" onClick={handleClickGetByID('stocks', 1)}>GET api/stocks/1</Button>
         </Templates.MaterialTemplate.DashboardLayout>
     );
 }
