@@ -1,4 +1,4 @@
-﻿import React from 'react';
+﻿import React, { useEffect } from 'react';
 import { connect, useSelector } from 'react-redux';
 import { bindActionCreators } from 'redux';
 
@@ -84,15 +84,13 @@ const useStyles = makeStyles((theme) => ({
     },
 }));
 
-function PersistentDrawerLeft(props) {
+const PersistentDrawerLeft = (props) => {
     const classes = useStyles();
     const theme = useTheme();
-    const application = useSelector(state => state.applicationState.application);
-
+    const { application } = props;
     const handleDrawerOpen = () => {
         props.ApplicationMenuOpen();
     };
-
     const handleDrawerClose = () => {
         props.ApplicationMenuClose();
     };
@@ -171,7 +169,7 @@ function PersistentDrawerLeft(props) {
 
 const {
     ApplicationMenuOpen,
-    ApplicationMenuClose
+    ApplicationMenuClose,
 } = ApplicationActionType.actions;
 
 const mapStateToProps = store => ({
@@ -183,7 +181,7 @@ const mapDispatchToProps = dispatch =>
     bindActionCreators({
         ApplicationMenuOpen,
         ApplicationMenuClose,
-        push
+        push,
     }, dispatch);
 
 export default connect(mapStateToProps, mapDispatchToProps)(PersistentDrawerLeft);

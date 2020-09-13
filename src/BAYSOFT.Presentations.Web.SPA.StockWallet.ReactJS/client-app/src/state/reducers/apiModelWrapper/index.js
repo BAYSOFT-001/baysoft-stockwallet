@@ -87,7 +87,7 @@ const setCommandPut = (state, payload) => {
     };
 };
 export const ApiModelWrapperReducer = (state = INITIAL_STATE, action) => {
-    console.log(action.type);
+    //console.log(action.type);
     //console.log(action.payload);
     switch (action.type) {
         case ApiModelWrapperActionType.types.CREATE_API_SERVICE: return {

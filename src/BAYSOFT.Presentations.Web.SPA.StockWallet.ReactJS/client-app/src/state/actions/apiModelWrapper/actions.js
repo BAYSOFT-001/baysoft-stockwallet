@@ -1,5 +1,7 @@
 ﻿import { push } from 'connected-react-router';
 
+import { ApplicationNotificatioAdd } from '../application/actions'
+
 import {
     CREATE_API_SERVICE, CREATE_API_FILTER,
     REQUEST_GETBYFILTER, RECEIVE_GETBYFILTER,
@@ -300,12 +302,12 @@ const HttpDelete = (_collection, _endPoint, _expires, _returnUrl) => (dispatch, 
     setTimeout(() => {
         let timeStamp = Date.now();
         timeStamp += _expires;
-        dispatch({ type: RECEIVE_DELETE, payload: { collection: _collection, endPoint: _endPoint, timeStamp: timeStamp,  } });
+        dispatch({ type: RECEIVE_DELETE, payload: { collection: _collection, endPoint: _endPoint, timeStamp: timeStamp, } });
         dispatch(push(_returnUrl));
     }, 3000);
 
     timeStamp += _expires;
-    dispatch({ type: REQUEST_DELETE, payload: { collection: _collection, endPoint: _endPoint, timeStamp: timeStamp,  } });
+    dispatch({ type: REQUEST_DELETE, payload: { collection: _collection, endPoint: _endPoint, timeStamp: timeStamp, } });
 };
 
 const HttpPatch = (_collection, _endPoint, _patchedModel, _expires, _returnUrl) => (dispatch, getState) => {
@@ -331,12 +333,12 @@ const HttpPatch = (_collection, _endPoint, _patchedModel, _expires, _returnUrl) 
     setTimeout(() => {
         let timeStamp = Date.now();
         timeStamp += _expires;
-        dispatch({ type: RECEIVE_PATCH, payload: { collection: _collection, endPoint: _endPoint, timeStamp: timeStamp,  data: null } });
+        dispatch({ type: RECEIVE_PATCH, payload: { collection: _collection, endPoint: _endPoint, timeStamp: timeStamp, data: null } });
         dispatch(push(_returnUrl));
     }, 3000);
 
     timeStamp += _expires;
-    dispatch({ type: REQUEST_PATCH, payload: { collection: _collection, endPoint: _endPoint, timeStamp: timeStamp,  data: _patchedModel } });
+    dispatch({ type: REQUEST_PATCH, payload: { collection: _collection, endPoint: _endPoint, timeStamp: timeStamp, data: _patchedModel } });
 };
 
 const HttpPost = (_collection, _endPoint, _postedModel, _expires, _returnUrl) => (dispatch, getState) => {
@@ -361,13 +363,13 @@ const HttpPost = (_collection, _endPoint, _postedModel, _expires, _returnUrl) =>
 
     setTimeout(() => {
         let timeStamp = Date.now();
-        timeStamp += _expires;
-        dispatch({ type: RECEIVE_POST, payload: { collection: _collection, endPoint: _endPoint, timeStamp: timeStamp,  data: null } });
+        dispatch(ApplicationNotificatioAdd('success', 'Operação realizada com sucesso!', true));
+        dispatch({ type: RECEIVE_POST, payload: { collection: _collection, endPoint: _endPoint, timeStamp: timeStamp, data: null } });
         dispatch(push(_returnUrl));
-    }, 3000);
+    }, 1000);
 
     timeStamp += _expires;
-    dispatch({ type: REQUEST_POST, payload: { collection: _collection, endPoint: _endPoint, timeStamp: timeStamp,  data: _postedModel } });
+    dispatch({ type: REQUEST_POST, payload: { collection: _collection, endPoint: _endPoint, timeStamp: timeStamp, data: _postedModel } });
 };
 
 const HttpPut = (_collection, _endPoint, _puttedModel, _expires, _returnUrl) => (dispatch, getState) => {
@@ -393,12 +395,12 @@ const HttpPut = (_collection, _endPoint, _puttedModel, _expires, _returnUrl) => 
     setTimeout(() => {
         let timeStamp = Date.now();
         timeStamp += _expires;
-        dispatch({ type: RECEIVE_PUT, payload: { collection: _collection, endPoint: _endPoint, timeStamp: timeStamp,  data: null } });
+        dispatch({ type: RECEIVE_PUT, payload: { collection: _collection, endPoint: _endPoint, timeStamp: timeStamp, data: null } });
         dispatch(push(_returnUrl));
     }, 3000);
 
     timeStamp += _expires;
-    dispatch({ type: REQUEST_PUT, payload: { collection: _collection, endPoint: _endPoint, timeStamp: timeStamp,  data: _puttedModel } });
+    dispatch({ type: REQUEST_PUT, payload: { collection: _collection, endPoint: _endPoint, timeStamp: timeStamp, data: _puttedModel } });
 };
 
 export {
