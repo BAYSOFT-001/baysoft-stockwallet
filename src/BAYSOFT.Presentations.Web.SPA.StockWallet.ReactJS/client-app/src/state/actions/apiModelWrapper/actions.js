@@ -2,6 +2,8 @@
 
 import { ApplicationNotificatioAdd } from '../application/actions'
 
+import { SHA256 } from 'crypto-js';
+
 import {
     CREATE_API_SERVICE, CREATE_API_FILTER,
     REQUEST_GETBYFILTER, RECEIVE_GETBYFILTER,
@@ -9,7 +11,8 @@ import {
     REQUEST_DELETE, RECEIVE_DELETE,
     REQUEST_PATCH, RECEIVE_PATCH,
     REQUEST_POST, RECEIVE_POST,
-    REQUEST_PUT, RECEIVE_PUT
+    REQUEST_PUT, RECEIVE_PUT,
+    EXPIRE_COLLECTION
 } from './types';
 
 const getUrl = (collection, filterProperties, searchProperties, ordenation, pagination, responseProperties) => {
@@ -347,29 +350,44 @@ const HttpPost = (_collection, _endPoint, _postedModel, _expires, _returnUrl) =>
     const { posts } = commands;
 
     let postCommand = posts[_endPoint];
+
+    let hashToken = SHA256(JSON.stringify(_postedModel)).toString();
+
     let timeStamp = Date.now();
-    if (postCommand && postCommand.timeStamp > timeStamp && postCommand.endPoint === _endPoint) {
+
+    let postHeaders = new Headers();
+
+    let postConfig = {
+        method: 'POST',
+        headers: postHeaders,
+        mode: 'cors',
+        cache: 'default',
+        body: JSON.stringify(_postedModel)
+    };
+
+    let postRequest = new Request(_endPoint, postConfig);
+
+    fetch(postRequest)
+        .then(response => response.json()).then(data => {
+            console.log(data);
+            if (data.statusCode === 200) {
+                let timeStamp = Date.now();
+                dispatch(ApplicationNotificatioAdd('success', data.message, true));
+                dispatch({ type: EXPIRE_COLLECTION, payload: { collection: _collection, timeStamp: timeStamp } });
+                dispatch({ type: RECEIVE_POST, payload: { collection: _collection, endPoint: _endPoint, token: hashToken, data: null } });
+                dispatch(push(_returnUrl));
+            } else {
+                dispatch(ApplicationNotificatioAdd('error', data.message, true));
+            }
+        })
+        .catch((error) => console.log(error));
+
+    if (postCommand && postCommand.token === hashToken && postCommand.endPoint === _endPoint) {
         return;
     }
 
-    //fetch(endPoint)
-    //    .then(response => response.json())
-    //    .then(data => {
-    //        let timeStamp = Date.now();
-    //        timeStamp += expires;
-    //        dispatch({ type: RECEIVE_POST_DATA, payload: { endPoint: endPoint, timeStamp: timeStamp, response: data } });
-    //    })
-    //    .catch(error => console.error(error));
-
-    setTimeout(() => {
-        let timeStamp = Date.now();
-        dispatch(ApplicationNotificatioAdd('success', 'Operação realizada com sucesso!', true));
-        dispatch({ type: RECEIVE_POST, payload: { collection: _collection, endPoint: _endPoint, timeStamp: timeStamp, data: null } });
-        dispatch(push(_returnUrl));
-    }, 1000);
-
     timeStamp += _expires;
-    dispatch({ type: REQUEST_POST, payload: { collection: _collection, endPoint: _endPoint, timeStamp: timeStamp, data: _postedModel } });
+    dispatch({ type: REQUEST_POST, payload: { collection: _collection, endPoint: _endPoint, token: hashToken, data: _postedModel } });
 };
 
 const HttpPut = (_collection, _endPoint, _puttedModel, _expires, _returnUrl) => (dispatch, getState) => {

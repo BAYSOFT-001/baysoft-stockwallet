@@ -38,7 +38,7 @@ const {
 } = ApplicationActionType.actions;
 
 const mapStateToProps = store => ({
-    application: store.applicationState.application,
+    application: store.ApplicationState.application,
     pathname: store.router.location.pathname,
 });
 

@@ -108,7 +108,7 @@ const EditPage = (props) => {
 };
 
 const mapStateToProps = store => ({
-    application: store.applicationState.application,
+    application: store.ApplicationState.application,
     entities: store.ApiModelWrapperState.queries.entities,
 });
 

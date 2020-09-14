@@ -59,7 +59,7 @@ const IndexPage = (props) => {
 }
 
 const mapStateToProps = store => ({
-    application: store.applicationState.application,
+    application: store.ApplicationState.application,
     collections: store.ApiModelWrapperState.queries.collections,
     entities: store.ApiModelWrapperState.queries.entities,
 });

@@ -15,7 +15,7 @@ class DeletePage extends Component {
 }
 
 const mapStateToProps = store => ({
-    application: store.applicationState.application
+    application: store.ApplicationState.application
 });
 
 const connectedComponent = connect(mapStateToProps)(DeletePage);

@@ -103,7 +103,7 @@ const CreatePage = (props) => {
 };
 
 const mapStateToProps = store => ({
-    application: store.applicationState.application
+    application: store.ApplicationState.application
 });
 
 const mapDispatchToProps = dispatch =>

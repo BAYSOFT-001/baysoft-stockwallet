@@ -6,6 +6,6 @@ import { ApiModelWrapperReducer } from './apiModelWrapper';
 
 export const Reducers = (history) => combineReducers({
     router: connectRouter(history),
-    applicationState: ApplicationReducer,
+    ApplicationState: ApplicationReducer,
     ApiModelWrapperState: ApiModelWrapperReducer
 });

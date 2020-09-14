@@ -16,37 +16,37 @@ namespace BAYSOFT.Presentations.Web.API.StockWallet.Resources
         [HttpGet]
         public async Task<ActionResult<GetStopsByFilterQueryResponse>> Get(GetStopsByFilterQuery request, CancellationToken cancellationToken = default(CancellationToken))
         {
-            return await Mediator.Send(request, cancellationToken);
+            return await Send(request, cancellationToken);
         }
 
         [HttpGet("{stopid}")]
         public async Task<ActionResult<GetStopByIDQueryResponse>> Get(GetStopByIDQuery request, CancellationToken cancellationToken = default(CancellationToken))
         {
-            return await Mediator.Send(request, cancellationToken);
+            return await Send(request, cancellationToken);
         }
 
         [HttpPost]
         public async Task<ActionResult<PostStopCommandResponse>> Post(PostStopCommand request, CancellationToken cancellationToken = default(CancellationToken))
         {
-            return await Mediator.Send(request, cancellationToken);
+            return await Send(request, cancellationToken);
         }
 
         [HttpPut("{stopid}")]
         public async Task<ActionResult<PutStopCommandResponse>> Put(PutStopCommand request, CancellationToken cancellationToken = default(CancellationToken))
         {
-            return await Mediator.Send(request, cancellationToken);
+            return await Send(request, cancellationToken);
         }
 
         [HttpPatch("{stopid}")]
         public async Task<ActionResult<PatchStopCommandResponse>> Patch(PatchStopCommand request, CancellationToken cancellationToken = default(CancellationToken))
         {
-            return await Mediator.Send(request, cancellationToken);
+            return await Send(request, cancellationToken);
         }
 
         [HttpDelete("{stopid}")]
         public async Task<ActionResult<DeleteStopCommandResponse>> Delete(DeleteStopCommand request, CancellationToken cancellationToken = default(CancellationToken))
         {
-            return await Mediator.Send(request, cancellationToken);
+            return await Send(request, cancellationToken);
         }
     }
 }

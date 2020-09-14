@@ -16,37 +16,37 @@ namespace BAYSOFT.Presentations.Web.API.StockWallet.Resources
         [HttpGet]
         public async Task<ActionResult<GetSectorsByFilterQueryResponse>> Get(GetSectorsByFilterQuery request, CancellationToken cancellationToken = default(CancellationToken))
         {
-            return await Mediator.Send(request, cancellationToken);
+            return await Send(request, cancellationToken);
         }
 
         [HttpGet("{sectorid}")]
         public async Task<ActionResult<GetSectorByIDQueryResponse>> Get(GetSectorByIDQuery request, CancellationToken cancellationToken = default(CancellationToken))
         {
-            return await Mediator.Send(request, cancellationToken);
+            return await Send(request, cancellationToken);
         }
 
         [HttpPost]
         public async Task<ActionResult<PostSectorCommandResponse>> Post(PostSectorCommand request, CancellationToken cancellationToken = default(CancellationToken))
         {
-            return await Mediator.Send(request, cancellationToken);
+            return await Send(request, cancellationToken);
         }
 
         [HttpPut("{sectorid}")]
         public async Task<ActionResult<PutSectorCommandResponse>> Put(PutSectorCommand request, CancellationToken cancellationToken = default(CancellationToken))
         {
-            return await Mediator.Send(request, cancellationToken);
+            return await Send(request, cancellationToken);
         }
 
         [HttpPatch("{sectorid}")]
         public async Task<ActionResult<PatchSectorCommandResponse>> Patch(PatchSectorCommand request, CancellationToken cancellationToken = default(CancellationToken))
         {
-            return await Mediator.Send(request, cancellationToken);
+            return await Send(request, cancellationToken);
         }
 
         [HttpDelete("{sectorid}")]
         public async Task<ActionResult<DeleteSectorCommandResponse>> Delete(DeleteSectorCommand request, CancellationToken cancellationToken = default(CancellationToken))
         {
-            return await Mediator.Send(request, cancellationToken);
+            return await Send(request, cancellationToken);
         }
     }
 }

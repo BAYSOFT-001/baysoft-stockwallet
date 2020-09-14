@@ -13,7 +13,6 @@ const ApplicationNameSet = (name) => ({
         applicationName: name
     }
 });
-
 const ApplicationMenuOpen = () => ({
     type: APPLICATION_MENU_OPEN,
     payload: {
@@ -27,8 +26,8 @@ const ApplicationMenuClose = () => ({
     }
 });
 const ApplicationNotificatioAdd = (severity, message, autoClose) => (dispatch, getState) => {
-    const { applicationState } = getState();
-    const { snackBar } = applicationState.application;
+    const { ApplicationState } = getState();
+    const { snackBar } = ApplicationState.application;
 
     let notification = { severity, message, autoClose };
     if (snackBar.notifications.length === 0 && !snackBar.open) {

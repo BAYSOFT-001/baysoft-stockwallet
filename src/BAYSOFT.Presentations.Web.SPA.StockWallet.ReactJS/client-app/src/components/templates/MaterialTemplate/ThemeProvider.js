@@ -26,7 +26,7 @@ class ThemeProvider extends Component {
 }
 
 const mapStateToProps = store => ({
-    application: store.applicationState.application
+    application: store.ApplicationState.application
 });
 
 export default connect(mapStateToProps)(ThemeProvider);

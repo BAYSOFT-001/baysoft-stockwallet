@@ -86,6 +86,16 @@ const setCommandPut = (state, payload) => {
         }
     };
 };
+const expireCollection = (state, payload) => {
+    Object.entries(state.queries.collections).map((value, index) => {
+        if (value[1].collection === payload.collection) {
+            value[1].timeStamp = payload.timeStamp;
+        }
+    });
+    return {
+        ...state
+    }
+};
 export const ApiModelWrapperReducer = (state = INITIAL_STATE, action) => {
     //console.log(action.type);
     //console.log(action.payload);
@@ -116,6 +126,7 @@ export const ApiModelWrapperReducer = (state = INITIAL_STATE, action) => {
         case ApiModelWrapperActionType.types.RECEIVE_POST: return setCommandPost(state, action.payload);
         case ApiModelWrapperActionType.types.REQUEST_PUT: return setCommandPut(state, action.payload);
         case ApiModelWrapperActionType.types.RECEIVE_PUT: return setCommandPut(state, action.payload);
+        case ApiModelWrapperActionType.types.EXPIRE_COLLECTION: return expireCollection(state, action.payload);
         default: return state;
     }
 }
