@@ -1,10 +1,13 @@
 ﻿using BAYSOFT.Core.Application;
 using BAYSOFT.Core.Domain.Entities;
+using BAYSOFT.Core.Domain.Exceptions;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.DependencyInjection;
 using ModelWrapper;
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -24,9 +27,13 @@ namespace BAYSOFT.Presentations.Web.API.StockWallet.Abstractions.Controllers
             {
                 return Ok(await Mediator.Send(request, cancellationToken));
             }
+            catch(BusinessException bex)
+            {
+                return BadRequest(new WrapResponse(400, 4001001, request.RequestObject, MapBusinessExceptionToDictionary(bex), bex.Message, 0));
+            }
             catch (Exception ex)
             {
-                return BadRequest(new WrapResponse(400, 4001001, request.RequestObject, null, ex.Message, 0));
+                return BadRequest(new WrapResponse(400, 4001001, request.RequestObject, ex.InnerException, ex.Message, 0));
             }
         }
 
@@ -35,6 +42,36 @@ namespace BAYSOFT.Presentations.Web.API.StockWallet.Abstractions.Controllers
             where TResponse : ApplicationResponse<TEntity>
         {
             return await Mediator.Send(request, cancellationToken);
+        }
+
+        private Dictionary<string, object> MapBusinessExceptionToDictionary(BusinessException businessException)
+        {
+            Dictionary<string, object> exceptionDictionary = new Dictionary<string, object>();
+
+            exceptionDictionary.Add("message", businessException.Message);
+            if(businessException.EntityExceptions != null && businessException.EntityExceptions.Count > 0)
+            {
+                Dictionary<string, object> entityExceptionDictionary = new Dictionary<string, object>();
+                
+                foreach(var group in businessException.EntityExceptions.GroupBy(x => x.SourceProperty))
+                {
+                    var exceptions = businessException.EntityExceptions.Where(exception => exception.SourceProperty.Equals(group.Key)).ToList();
+                    entityExceptionDictionary.Add(group.Key, exceptions.Select(x => x.Message).ToArray());
+                }
+
+                exceptionDictionary.Add("entityExceptions", entityExceptionDictionary);
+            }
+            if(businessException.DomainExceptions != null && businessException.DomainExceptions.Count > 0)
+            {
+                exceptionDictionary.Add(
+                    "domainExceptions",
+                    businessException.DomainExceptions
+                        .Select(exception=> exception.Message)
+                        .ToArray()
+                );
+            }
+
+            return exceptionDictionary;
         }
     }
 }
