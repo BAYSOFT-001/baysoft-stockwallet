@@ -33,9 +33,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Presentations", "Presentati
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BAYSOFT.Presentations.Web.API.StockWallet", "src\BAYSOFT.Presentations.Web.API.StockWallet\BAYSOFT.Presentations.Web.API.StockWallet.csproj", "{47E3FBA8-64AD-47D0-9DDF-4C5978B317EF}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BAYSOFT.Presentations.Web.SPA.StockWallet.ReactTS", "src\BAYSOFT.Presentations.Web.SPA.StockWallet.ReactTS\BAYSOFT.Presentations.Web.SPA.StockWallet.ReactTS.csproj", "{2DF0E055-1EDA-4227-900B-7876147DC784}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BAYSOFT.Presentations.Web.SPA.StockWallet.ReactJS", "src\BAYSOFT.Presentations.Web.SPA.StockWallet.ReactJS\BAYSOFT.Presentations.Web.SPA.StockWallet.ReactJS.csproj", "{1464126B-B453-459F-B5D0-512E080BA2EB}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BAYSOFT.Presentations.Web.SPA.StockWallet.ReactJS", "src\BAYSOFT.Presentations.Web.SPA.StockWallet.ReactJS\BAYSOFT.Presentations.Web.SPA.StockWallet.ReactJS.csproj", "{1464126B-B453-459F-B5D0-512E080BA2EB}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -79,10 +77,6 @@ Global
 		{47E3FBA8-64AD-47D0-9DDF-4C5978B317EF}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{47E3FBA8-64AD-47D0-9DDF-4C5978B317EF}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{47E3FBA8-64AD-47D0-9DDF-4C5978B317EF}.Release|Any CPU.Build.0 = Release|Any CPU
-		{2DF0E055-1EDA-4227-900B-7876147DC784}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{2DF0E055-1EDA-4227-900B-7876147DC784}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{2DF0E055-1EDA-4227-900B-7876147DC784}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{2DF0E055-1EDA-4227-900B-7876147DC784}.Release|Any CPU.Build.0 = Release|Any CPU
 		{1464126B-B453-459F-B5D0-512E080BA2EB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{1464126B-B453-459F-B5D0-512E080BA2EB}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{1464126B-B453-459F-B5D0-512E080BA2EB}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -105,7 +99,6 @@ Global
 		{526C6EBD-43BC-4809-BB3C-9C53FD00D0D1} = {1744F08B-5E3D-4AB1-9CED-13AE9A075647}
 		{61500D70-30CC-44AE-897C-60AEACA9BCE9} = {6A648C9D-70CD-4415-ADA3-DB0E28573749}
 		{47E3FBA8-64AD-47D0-9DDF-4C5978B317EF} = {BDA5186A-57A4-4F49-8F7F-63C35B8AED3C}
-		{2DF0E055-1EDA-4227-900B-7876147DC784} = {BDA5186A-57A4-4F49-8F7F-63C35B8AED3C}
 		{1464126B-B453-459F-B5D0-512E080BA2EB} = {BDA5186A-57A4-4F49-8F7F-63C35B8AED3C}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
