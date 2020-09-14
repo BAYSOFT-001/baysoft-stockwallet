@@ -24,7 +24,7 @@ const DashboardLayout = (props) => {
                 {props.children}
             </PersistentDrawerLeft>
 
-            <Snackbar open={snackBar.open} autoHideDuration={1000} onClose={() => { props.ApplicationNotificatioClose(); }}>
+            <Snackbar open={snackBar.open} autoHideDuration={2500} onClose={() => { props.ApplicationNotificatioClose(); }}>
                 <Alert onClose={() => { props.ApplicationNotificatioClose(); }} severity={snackBar.severity}>
                     {snackBar.message}
                 </Alert>
