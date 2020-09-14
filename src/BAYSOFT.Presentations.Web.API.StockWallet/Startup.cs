@@ -28,7 +28,10 @@ namespace BAYSOFT.Presentations.Web.API.StockWallet
             {
                 options.AddDefaultPolicy(policy =>
                 {
-                    policy.WithOrigins("https://localhost:6101");
+                    policy.AllowAnyHeader();
+                    policy.AllowAnyMethod();
+                    policy.AllowAnyOrigin();
+                    //policy.WithOrigins("https://localhost:6101");
                 });
             });
 

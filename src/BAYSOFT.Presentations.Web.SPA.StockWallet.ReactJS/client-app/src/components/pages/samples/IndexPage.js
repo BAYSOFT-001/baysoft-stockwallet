@@ -7,6 +7,7 @@ import { push } from 'connected-react-router';
 import { Templates } from '../../templates';
 
 import ApiConnectedTable from '../../organisms/ApiConnectedTable';
+import { CreateApiService } from '../../../state/actions/apiModelWrapper/actions';
 
 const IndexPage = (props) => {
     const config = {
@@ -25,10 +26,13 @@ const IndexPage = (props) => {
         actions: {
             'add': { handler: () => { redirectToAdd(); } },
             'edit': { handler: (id) => { redirectToEdit(id); } },
-            'delete': { handler: (ids) => { console.log('click: deleteHandler'); } }
+            'delete': { handler: (ids) => { deleteHandler(ids); } }
         }
     };
-
+    const api = props.CreateApiService(`samples-service`, 'https://localhost:4101/api/samples');
+    const deleteHandler = (ids) => {
+        ids.map(id => api.Delete(id));
+    };
     const redirectToAdd = () => {
         props.push('/samples/create');
     };
@@ -49,7 +53,8 @@ const mapStateToProps = store => ({
 
 const mapDispatchToProps = dispatch =>
     bindActionCreators({
-        push
+        push,
+        CreateApiService
     }, dispatch);
 
 const connectedComponent = connect(mapStateToProps, mapDispatchToProps)(IndexPage);

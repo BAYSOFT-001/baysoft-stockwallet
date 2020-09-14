@@ -12,7 +12,8 @@ import {
     REQUEST_PATCH, RECEIVE_PATCH,
     REQUEST_POST, RECEIVE_POST,
     REQUEST_PUT, RECEIVE_PUT,
-    EXPIRE_COLLECTION
+    EXPIRE_COLLECTION,
+    EXPIRE_ENTITY
 } from './types';
 
 const getUrl = (collection, filterProperties, searchProperties, ordenation, pagination, responseProperties) => {
@@ -113,7 +114,7 @@ const ApiWrapper = (id, collection, expires) => (dispatch) => {
         Delete(id, returnUrl) {
             let commandEndPoint = `${this.collection}/${id}`;
 
-            dispatch(HttpDelete(this.collection, commandEndPoint, returnUrl));
+            dispatch(HttpDelete(this.collection, commandEndPoint, this.expires, returnUrl));
 
             return commandEndPoint;
         },
@@ -280,39 +281,50 @@ const HttpGetByID = (_collection, _endPoint, _expires) => (dispatch, getState) =
     timeStamp += _expires;
     dispatch({ type: REQUEST_GETBYID, payload: { collection: _collection, endPoint: _endPoint, timeStamp: timeStamp, response: null } });
 };
-
 const HttpDelete = (_collection, _endPoint, _expires, _returnUrl) => (dispatch, getState) => {
     const { ApiModelWrapperState } = getState();
     const { commands } = ApiModelWrapperState;
     const { deletes } = commands;
 
     let deleteCommand = deletes[_endPoint];
-
     let timeStamp = Date.now();
-    if (deleteCommand && deleteCommand.timeStamp > timeStamp && deleteCommand.endPoint === _endPoint) {
+
+    let deleteHeaders = new Headers();
+
+    let deleteConfig = {
+        method: 'DELETE',
+        headers: deleteHeaders,
+        mode: 'cors',
+        cache: 'default'
+    };
+
+    let deleteRequest = new Request(_endPoint, deleteConfig);
+
+    fetch(deleteRequest)
+        .then(response => response.json()).then(data => {
+            console.log(data);
+            if (data.statusCode === 200) {
+                let timeStamp = Date.now();
+                dispatch(ApplicationNotificatioAdd('success', data.message, true));
+                dispatch({ type: EXPIRE_COLLECTION, payload: { collection: _collection, timeStamp: timeStamp } });
+                dispatch({ type: EXPIRE_ENTITY, payload: { collection: _collection, endPoint: _endPoint, timeStamp: timeStamp } });
+                dispatch({ type: RECEIVE_DELETE, payload: { collection: _collection, endPoint: _endPoint, timeStamp: timeStamp } });
+                if (_returnUrl) {
+                    dispatch(push(_returnUrl));
+                }
+            } else {
+                dispatch(ApplicationNotificatioAdd('error', data.message, true));
+            }
+        })
+        .catch((error) => console.log(error));
+
+    if (deleteCommand && deleteCommand.endPoint === _endPoint && deleteCommand.timeStamp > timeStamp) {
         return;
     }
 
-    //fetch(endPoint)
-    //    .then(response => response.json())
-    //    .then(data => {
-    //        let timeStamp = Date.now();
-    //        timeStamp += expires;
-    //        dispatch({ type: RECEIVE_POST_DATA, payload: { endPoint: endPoint, timeStamp: timeStamp, response: data } });
-    //    })
-    //    .catch(error => console.error(error));
-
-    setTimeout(() => {
-        let timeStamp = Date.now();
-        timeStamp += _expires;
-        dispatch({ type: RECEIVE_DELETE, payload: { collection: _collection, endPoint: _endPoint, timeStamp: timeStamp, } });
-        dispatch(push(_returnUrl));
-    }, 3000);
-
     timeStamp += _expires;
-    dispatch({ type: REQUEST_DELETE, payload: { collection: _collection, endPoint: _endPoint, timeStamp: timeStamp, } });
+    dispatch({ type: REQUEST_DELETE, payload: { collection: _collection, endPoint: _endPoint, timeStamp: timeStamp } });
 };
-
 const HttpPatch = (_collection, _endPoint, _patchedModel, _expires, _returnUrl) => (dispatch, getState) => {
     const { ApiModelWrapperState } = getState();
     const { commands } = ApiModelWrapperState;
@@ -320,40 +332,51 @@ const HttpPatch = (_collection, _endPoint, _patchedModel, _expires, _returnUrl) 
 
     let patchCommand = patchs[_endPoint];
     let timeStamp = Date.now();
-    if (patchCommand && patchCommand.timeStamp > timeStamp && patchCommand.endPoint === _endPoint) {
+    let hashToken = SHA256(JSON.stringify(_patchedModel)).toString();
+
+    let patchHeaders = new Headers();
+
+    let patchConfig = {
+        method: 'PATCH',
+        headers: patchHeaders,
+        mode: 'cors',
+        cache: 'default',
+        body: JSON.stringify(_patchedModel)
+    };
+
+    let patchRequest = new Request(_endPoint, patchConfig);
+
+    fetch(patchRequest)
+        .then(response => response.json()).then(data => {
+            console.log(data);
+            if (data.statusCode === 200) {
+                let timeStamp = Date.now();
+                dispatch(ApplicationNotificatioAdd('success', data.message, true));
+                dispatch({ type: EXPIRE_COLLECTION, payload: { collection: _collection, timeStamp: timeStamp } });
+                dispatch({ type: EXPIRE_ENTITY, payload: { collection: _collection, endPoint: _endPoint, timeStamp: timeStamp } });
+                dispatch({ type: RECEIVE_PATCH, payload: { collection: _collection, endPoint: _endPoint, token: hashToken, data: null } });
+                dispatch(push(_returnUrl));
+            } else {
+                dispatch(ApplicationNotificatioAdd('error', data.message, true));
+            }
+        })
+        .catch((error) => console.log(error));
+
+    if (patchCommand && patchCommand.endPoint === _endPoint && (patchCommand.token === hashToken || patchCommand.timeStamp > timeStamp)) {
         return;
     }
-
-    //fetch(endPoint)
-    //    .then(response => response.json())
-    //    .then(data => {
-    //        let timeStamp = Date.now();
-    //        timeStamp += expires;
-    //        dispatch({ type: RECEIVE_POST_DATA, payload: { endPoint: endPoint, timeStamp: timeStamp, response: data } });
-    //    })
-    //    .catch(error => console.error(error));
-
-    setTimeout(() => {
-        let timeStamp = Date.now();
-        timeStamp += _expires;
-        dispatch({ type: RECEIVE_PATCH, payload: { collection: _collection, endPoint: _endPoint, timeStamp: timeStamp, data: null } });
-        dispatch(push(_returnUrl));
-    }, 3000);
 
     timeStamp += _expires;
     dispatch({ type: REQUEST_PATCH, payload: { collection: _collection, endPoint: _endPoint, timeStamp: timeStamp, data: _patchedModel } });
 };
-
 const HttpPost = (_collection, _endPoint, _postedModel, _expires, _returnUrl) => (dispatch, getState) => {
     const { ApiModelWrapperState } = getState();
     const { commands } = ApiModelWrapperState;
     const { posts } = commands;
 
     let postCommand = posts[_endPoint];
-
-    let hashToken = SHA256(JSON.stringify(_postedModel)).toString();
-
     let timeStamp = Date.now();
+    let hashToken = SHA256(JSON.stringify(_postedModel)).toString();
 
     let postHeaders = new Headers();
 
@@ -380,16 +403,15 @@ const HttpPost = (_collection, _endPoint, _postedModel, _expires, _returnUrl) =>
                 dispatch(ApplicationNotificatioAdd('error', data.message, true));
             }
         })
-        .catch((error) => console.log(error));
+        .catch((error) => dispatch(ApplicationNotificatioAdd('error', error, true)));
 
-    if (postCommand && postCommand.token === hashToken && postCommand.endPoint === _endPoint) {
+    if (postCommand && postCommand.endPoint === _endPoint && (postCommand.token === hashToken || postCommand.timeStamp > timeStamp)) {
         return;
     }
 
     timeStamp += _expires;
     dispatch({ type: REQUEST_POST, payload: { collection: _collection, endPoint: _endPoint, token: hashToken, data: _postedModel } });
 };
-
 const HttpPut = (_collection, _endPoint, _puttedModel, _expires, _returnUrl) => (dispatch, getState) => {
     const { ApiModelWrapperState } = getState();
     const { commands } = ApiModelWrapperState;
@@ -397,28 +419,42 @@ const HttpPut = (_collection, _endPoint, _puttedModel, _expires, _returnUrl) => 
 
     let putCommnand = puts[_endPoint];
     let timeStamp = Date.now();
-    if (putCommnand && putCommnand.timeStamp > timeStamp && putCommnand.endPoint === _endPoint) {
+    let hashToken = SHA256(JSON.stringify(_puttedModel)).toString();
+
+    let putHeaders = new Headers();
+
+    let putConfig = {
+        method: 'PUT',
+        headers: putHeaders,
+        mode: 'cors',
+        cache: 'default',
+        body: JSON.stringify(_puttedModel)
+    };
+
+    let putRequest = new Request(_endPoint, putConfig);
+
+    fetch(putRequest)
+        .then(response => response.json()).then(data => {
+            console.log(data);
+            if (data.statusCode === 200) {
+                let timeStamp = Date.now();
+                dispatch(ApplicationNotificatioAdd('success', data.message, true));
+                dispatch({ type: EXPIRE_COLLECTION, payload: { collection: _collection, timeStamp: timeStamp } });
+                dispatch({ type: EXPIRE_ENTITY, payload: { collection: _collection, endPoint: _endPoint, timeStamp: timeStamp } });
+                dispatch({ type: RECEIVE_PUT, payload: { collection: _collection, endPoint: _endPoint, token: hashToken, data: null } });
+                dispatch(push(_returnUrl));
+            } else {
+                dispatch(ApplicationNotificatioAdd('error', data.message, true));
+            }
+        })
+        .catch((error) => console.log(error));
+
+    if (putCommnand && putCommnand.endPoint === _endPoint && (putCommnand.token === hashToken || putCommnand.timeStamp > timeStamp)) {
         return;
     }
 
-    //fetch(endPoint)
-    //    .then(response => response.json())
-    //    .then(data => {
-    //        let timeStamp = Date.now();
-    //        timeStamp += expires;
-    //        dispatch({ type: RECEIVE_POST_DATA, payload: { endPoint: endPoint, timeStamp: timeStamp, response: data } });
-    //    })
-    //    .catch(error => console.error(error));
-
-    setTimeout(() => {
-        let timeStamp = Date.now();
-        timeStamp += _expires;
-        dispatch({ type: RECEIVE_PUT, payload: { collection: _collection, endPoint: _endPoint, timeStamp: timeStamp, data: null } });
-        dispatch(push(_returnUrl));
-    }, 3000);
-
     timeStamp += _expires;
-    dispatch({ type: REQUEST_PUT, payload: { collection: _collection, endPoint: _endPoint, timeStamp: timeStamp, data: _puttedModel } });
+    dispatch({ type: REQUEST_PUT, payload: { collection: _collection, endPoint: _endPoint, timeStamp: timeStamp, token: hashToken, data: _puttedModel } });
 };
 
 export {
