@@ -2,7 +2,7 @@
 
 const INITIAL_STATE = {
     application: {
-        name: "StockWallet",
+        name: "[DEV]StockWallet",
         menu: {
             title: 'Menu',
             isOpen: true,
