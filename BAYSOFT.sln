@@ -33,7 +33,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Presentations", "Presentati
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BAYSOFT.Presentations.Web.API.StockWallet", "src\BAYSOFT.Presentations.Web.API.StockWallet\BAYSOFT.Presentations.Web.API.StockWallet.csproj", "{47E3FBA8-64AD-47D0-9DDF-4C5978B317EF}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BAYSOFT.Presentations.Web.SPA.StockWallet.ReactJS", "src\BAYSOFT.Presentations.Web.SPA.StockWallet.ReactJS\BAYSOFT.Presentations.Web.SPA.StockWallet.ReactJS.csproj", "{1464126B-B453-459F-B5D0-512E080BA2EB}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BAYSOFT.Presentations.Web.SPA.StockWallet", "src\BAYSOFT.Presentations.Web.SPA.StockWallet\BAYSOFT.Presentations.Web.SPA.StockWallet.csproj", "{1464126B-B453-459F-B5D0-512E080BA2EB}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
