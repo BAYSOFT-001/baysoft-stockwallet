@@ -43,7 +43,7 @@ const ChangeStateApplicationMenuClose = (state, payload) => {
     return { ...state, application: { ...state.application, menu: { ...state.application.menu, isOpen: payload.isOpen } } };
 };
 const ChangeStateApplicationNotificationAdd = (state, payload) => {
-    return { ...state, application: { ...state.application, snackBar: { ...state.snackBar, notifications: [...state.snackBar.notifications, payload.notification] } } };
+    return { ...state, application: { ...state.application, snackBar: { ...state.application.snackBar, notifications: [...state.application.snackBar.notifications, payload.notification] } } };
 };
 const ChangeStateApplicationNotificationShow = (state, payload) => {
     let newSnackBar = { ...state.application.snackBar, open: true, severity: payload.notification.severity, message: payload.notification.message, autoClose: payload.notification.autoClose };

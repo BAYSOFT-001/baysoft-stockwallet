@@ -401,7 +401,15 @@ const HttpPost = (_collection, _endPoint, _postedModel, _expires, _returnUrl) =>
                 dispatch({ type: RECEIVE_POST, payload: { collection: _collection, endPoint: _endPoint, token: hashToken, data: null } });
                 dispatch(push(_returnUrl));
             } else {
+                console.log('POST ERROR');
+                console.log(data);
                 dispatch(ApplicationNotificatioAdd('error', data.message, true));
+                if (data.data && data.data.entityExceptions) {
+                    console.log('TODO: set entity validations on redux context!!!');
+                }
+                if (data.data && data.data.domainExceptions && data.data.domainExceptions.length > 0) {
+                    data.data.domainExceptions.map((value, index) => dispatch(ApplicationNotificatioAdd('error', value, true)));
+                }
             }
         })
         .catch((error) => dispatch(ApplicationNotificatioAdd('error', error, true)));

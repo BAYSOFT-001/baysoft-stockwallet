@@ -40,7 +40,13 @@ const ApplicationNotificatioShow = (notification) => (dispatch, getState) => {
     dispatch({ type: APPLICATION_NOTIFICATION_SHOW, payload: { notification: notification } });
 };
 const ApplicationNotificatioClose = () => (dispatch, getState) => {
+    const { ApplicationState } = getState();
+    const { snackBar } = ApplicationState.application;
     dispatch({ type: APPLICATION_NOTIFICATION_CLOSE, payload: {} });
+    if (snackBar && snackBar.notifications && snackBar.notifications.length > 0) {
+        let notification = snackBar.notifications[0];
+        setTimeout(() => { dispatch(ApplicationNotificatioShow(notification)); }, 500);
+    }
 };
 
 export {

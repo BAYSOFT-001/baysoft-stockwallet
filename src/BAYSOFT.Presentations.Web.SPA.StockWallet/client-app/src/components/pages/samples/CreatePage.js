@@ -85,7 +85,7 @@ const CreatePage = (props) => {
                     <Grid container spacing={0} >
                         <Grid item xs={12}>
                             <FormControl fullWidth className={classes.formMargin} >
-                                <TextField id="outlined-basic" label="Description" variant="outlined" value={sample.description} onChange={handleChange('description')} />
+                                <TextField error={false} helperText={""} id="outlined-basic" label="Description" variant="outlined" value={sample.description} onChange={handleChange('description')} />
                             </FormControl>
                         </Grid>
                     </Grid>
