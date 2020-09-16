@@ -48,6 +48,7 @@ const EditPage = (props) => {
     const classes = useStyles();
     const [requestUrl, setRequestUrl] = useState('');
     const [sample, setSample] = useState({ description: '' });
+    const [validations, setValidations] = useState([]);
 
     const api = props.CreateApiService(`samples-service`, 'https://localhost:4101/api/samples');
 
@@ -90,7 +91,7 @@ const EditPage = (props) => {
                     <Grid container spacing={0} >
                         <Grid item xs={12}>
                             <FormControl fullWidth className={classes.formMargin} >
-                                <TextField id="outlined-basic" label="Description" variant="outlined" value={sample.description} onChange={handleChange('description')} />
+                                <TextField error={sample.entityValidations && sample.entityValidations.length > 0} helperText={sample.entityValidations ? sample.entityValidations['Description'][0] : ''} id="outlined-basic" label="Description" variant="outlined" value={sample.description} onChange={handleChange('description')} />
                             </FormControl>
                         </Grid>
                     </Grid>
