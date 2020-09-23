@@ -1,4 +1,4 @@
-﻿import React, { useState } from 'react';
+﻿import React, { useState, useEffect } from 'react';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 
@@ -47,11 +47,15 @@ const useStyles = makeStyles(theme => ({
 }));
 
 const CreatePage = (props) => {
+    const endPoint = 'https://localhost:4101/api/samples';
     const returnUrl = '/samples';
+    const { posts } = props;
     const classes = useStyles();
-    const [sample, setSample] = useState({ description: '' });
 
-    const api = props.CreateApiService(`samples-service`, 'https://localhost:4101/api/samples');
+    const [sample, setSample] = useState({ description: '' });
+    const [sampleValidations, setSampleValidations] = useState(null);
+
+    const api = props.CreateApiService(`samples-service`, endPoint);
 
     const handleClickBack = (event) => {
         props.push(returnUrl);
@@ -62,9 +66,15 @@ const CreatePage = (props) => {
     };
 
     const handleClickSave = () => {
+        setSampleValidations(null);
         api.Post(sample, returnUrl);
     };
-
+    
+    useEffect(() => {
+        if (posts && posts[endPoint] && posts[endPoint].entityValidations && posts[endPoint].entityValidations['Description']) {
+            setSampleValidations(posts[endPoint].entityValidations);
+        }
+    }, [posts]);
     return (
         <Templates.MaterialTemplate.DashboardLayout>
             <Paper className={classes.mainPaper}>
@@ -85,7 +95,7 @@ const CreatePage = (props) => {
                     <Grid container spacing={0} >
                         <Grid item xs={12}>
                             <FormControl fullWidth className={classes.formMargin} >
-                                <TextField error={false} helperText={""} id="outlined-basic" label="Description" variant="outlined" value={sample.description} onChange={handleChange('description')} />
+                                <TextField error={sampleValidations && sampleValidations.Description ? true : false} helperText={sampleValidations && sampleValidations.Description ? sampleValidations.Description.join(' ') : ''} id="outlined-basic" label="Description" variant="outlined" value={sample.description} onChange={handleChange('description')} />
                             </FormControl>
                         </Grid>
                     </Grid>
@@ -103,7 +113,8 @@ const CreatePage = (props) => {
 };
 
 const mapStateToProps = store => ({
-    application: store.ApplicationState.application
+    application: store.ApplicationState.application,
+    posts: store.ApiModelWrapperState.commands.posts
 });
 
 const mapDispatchToProps = dispatch =>
