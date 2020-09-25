@@ -43,7 +43,7 @@ const useStyles = makeStyles(theme => ({
         marginBottom: theme.spacing(2),
     },
     mainTable: {
-        minWidth: 750,
+        minWidth: 400,
     },
     mainVisuallyHidden: {
         border: 0,
