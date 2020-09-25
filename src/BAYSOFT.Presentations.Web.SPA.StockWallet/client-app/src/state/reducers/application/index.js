@@ -1,4 +1,5 @@
 ﻿import { ApplicationActionType } from '../../actions';
+import { ApplicationDialogCreateAction } from '../../actions/application/actions';
 
 const INITIAL_STATE = {
     application: {
@@ -23,6 +24,12 @@ const INITIAL_STATE = {
                 route: '/item-02',
                 isDisabled: true
             }]
+        },
+        dialog: {
+            open: false,
+            title: 'Some action needs your attention',
+            message: 'Are you shore you want to procceed with this action?',
+            actions: []
         },
         snackBar: {
             open: false,
@@ -54,6 +61,16 @@ const ChangeStateApplicationNotificationClose = (state, payload) => {
     newNotifications.shift();
     return { ...state, application: { ...state.application, snackBar: { ...state.snackBar, open: false, notifications: [...newNotifications] } } };
 };
+const ChangeStateApplicationDialogShow = (state, payload) => {
+    return { ...state, application: { ...state.application, dialog: { ...state.application.dialog, open: true, title: payload.title, message: payload.message } } };
+};
+const ChangeStateApplicationDialogClose = (state) => {
+    return { ...state, application: { ...state.application, dialog: { open: false, title: '', message: '', actions: [] } } };
+};
+const ChangeStateApplicationDialogAddAction = (state, payload) => {
+    let newActions = [...state.application.dialog.actions, payload];
+    return { ...state, application: { ...state.application, dialog: { ...state.application.dialog, actions: newActions } } };
+}
 export const ApplicationReducer = (state = INITIAL_STATE, action) => {
     console.log(action.type);
     console.log(action.payload);
@@ -64,6 +81,9 @@ export const ApplicationReducer = (state = INITIAL_STATE, action) => {
         case ApplicationActionType.types.APPLICATION_NOTIFICATION_ADD: return ChangeStateApplicationNotificationAdd(state, action.payload);
         case ApplicationActionType.types.APPLICATION_NOTIFICATION_SHOW: return ChangeStateApplicationNotificationShow(state, action.payload);
         case ApplicationActionType.types.APPLICATION_NOTIFICATION_CLOSE: return ChangeStateApplicationNotificationClose(state, action.payload);
+        case ApplicationActionType.types.APPLICATION_DIALOG_SHOW: return ChangeStateApplicationDialogShow(state, action.payload);
+        case ApplicationActionType.types.APPLICATION_DIALOG_CLOSE: return ChangeStateApplicationDialogClose(state);
+        case ApplicationActionType.types.APPLICATION_DIALOG_ADD_ACTION: return ChangeStateApplicationDialogAddAction(state, action.payload);
         default: return state;
     }
 }

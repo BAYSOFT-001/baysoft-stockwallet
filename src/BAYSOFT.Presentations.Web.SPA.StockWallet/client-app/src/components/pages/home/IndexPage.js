@@ -10,6 +10,8 @@ import {
 } from '@material-ui/core';
 import { CreateApiService, CreateApiFilter } from '../../../state/actions/apiModelWrapper/actions';
 
+import { ApplicationDialogAlert, ApplicationDialogShow, ApplicationDialogClose, ApplicationDialogAddAction } from '../../../state/actions/application/actions';
+
 const IndexPage = (props) => {
     const { collections, entities } = props;
     console.log(collections);
@@ -23,6 +25,13 @@ const IndexPage = (props) => {
         const filter = props.CreateApiFilter(`${collection}-service-filter`);
 
         api.GetByFilter(filter);
+
+        let actions = [];
+        console.log(props.ApplicationDialogAddAction);
+        actions.push(props.ApplicationDialogAddAction('Disagree', 'text', 'default', () => { props.ApplicationDialogClose(); }));
+        actions.push(props.ApplicationDialogAddAction('Agree', 'text', 'primary', () => { props.ApplicationDialogClose(); }));
+
+        props.ApplicationDialogShow('Agreement', 'Do you agree to get data form our api?', actions);
     };
 
     const handleClickGetByID = (collection, id) => () => {
@@ -32,13 +41,17 @@ const IndexPage = (props) => {
         const api = props.CreateApiService(`${collection}-service`, endPoint);
 
         api.GetById(id);
+
+        props.ApplicationDialogAlert("Alerta", "Você clicou em obter por ID");
     };
     return (
         <Templates.MaterialTemplate.DashboardLayout>
             <Typography variant="h6" noWrap>
                 Home/Index - data...
             </Typography>
-            <hr/>
+            <hr />
+            <Button variant="contained" color="secondary">Color?</Button>
+            <hr />
             <Typography noWrap>api/samples</Typography>
             <Button variant="contained" color="primary" onClick={handleClickGetByFilter('samples', 'samp')}>GET api/samples</Button>
             <Button variant="contained" color="primary" onClick={handleClickGetByID('samples', 1)}>GET api/samples/1</Button>
@@ -67,7 +80,8 @@ const mapStateToProps = store => ({
 const mapDispatchToProps = dispatch =>
     bindActionCreators({
         CreateApiService,
-        CreateApiFilter
+        CreateApiFilter,
+        ApplicationDialogShow, ApplicationDialogClose, ApplicationDialogAddAction, ApplicationDialogAlert
     }, dispatch);
 
 const connectedComponent = connect(mapStateToProps, mapDispatchToProps)(IndexPage);

@@ -197,15 +197,13 @@ const ApiConnectedTable = props => {
         config.actions['edit'].handler(id);
     };
     const handleClickDelete = (event) => {
-        config.actions['delete'].handler(selectedRows);
-        console.log('handleClickDelete: ' + (selectedRows === response.data.length));
-        console.log(selectedRows.length);
-        console.log(response.data.length);
-        if (selectedRows.length === response.data.length) {
-            handleChangePage(null, (response.request.pagination.number - 2));
-        }
+        config.actions['delete'].handler(selectedRows, () => {
+            if (selectedRows.length === response.data.length) {
+                handleChangePage(null, (response.request.pagination.number - 2));
+            }
 
-        setSelectedRows([]);
+            setSelectedRows([]);
+        });
     };
     const handleQuery = (event) => {
         setQuery(event.target.value);

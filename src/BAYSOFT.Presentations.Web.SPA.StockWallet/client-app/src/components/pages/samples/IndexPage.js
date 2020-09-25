@@ -8,6 +8,7 @@ import { Templates } from '../../templates';
 
 import ApiConnectedTable from '../../organisms/ApiConnectedTable';
 import { CreateApiService } from '../../../state/actions/apiModelWrapper/actions';
+import { ApplicationDialogShow, ApplicationDialogClose, ApplicationDialogAddAction } from '../../../state/actions/application/actions';
 
 const IndexPage = (props) => {
     const config = {
@@ -26,12 +27,17 @@ const IndexPage = (props) => {
         actions: {
             'add': { handler: () => { redirectToAdd(); } },
             'edit': { handler: (id) => { redirectToEdit(id); } },
-            'delete': { handler: (ids) => { deleteHandler(ids); } }
+            'delete': { handler: (ids, callback) => { deleteHandler(ids, callback); } }
         }
     };
     const api = props.CreateApiService(`samples-service`, 'https://localhost:4101/api/samples');
-    const deleteHandler = (ids) => {
-        ids.map(id => api.Delete(id));
+    const deleteHandler = (ids, callback) => {
+        let actions = [];
+        console.log(props.ApplicationDialogAddAction);
+        actions.push(props.ApplicationDialogAddAction('Cancel', 'outlined', 'default', () => { props.ApplicationDialogClose(); }));
+        actions.push(props.ApplicationDialogAddAction('Delete', 'contained', 'secondary', () => { ids.map(id => api.Delete(id)); props.ApplicationDialogClose(); callback(); }));
+
+        props.ApplicationDialogShow('Confirm', 'Do you want to confirm the delete action?', actions);
     };
     const redirectToAdd = () => {
         props.push('/samples/create');
@@ -54,7 +60,8 @@ const mapStateToProps = store => ({
 const mapDispatchToProps = dispatch =>
     bindActionCreators({
         push,
-        CreateApiService
+        CreateApiService,
+        ApplicationDialogShow, ApplicationDialogClose, ApplicationDialogAddAction
     }, dispatch);
 
 const connectedComponent = connect(mapStateToProps, mapDispatchToProps)(IndexPage);

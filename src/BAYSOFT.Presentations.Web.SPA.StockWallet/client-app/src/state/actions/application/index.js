@@ -5,7 +5,10 @@ import {
     APPLICATION_MENU_CLOSE,
     APPLICATION_NOTIFICATION_ADD,
     APPLICATION_NOTIFICATION_SHOW,
-    APPLICATION_NOTIFICATION_CLOSE
+    APPLICATION_NOTIFICATION_CLOSE,
+    APPLICATION_DIALOG_SHOW,
+    APPLICATION_DIALOG_CLOSE,
+    APPLICATION_DIALOG_ADD_ACTION
 } from './types';
 
 // - Import Actions
@@ -15,7 +18,11 @@ import {
     ApplicationMenuClose,
     ApplicationNotificatioAdd,
     ApplicationNotificatioShow,
-    ApplicationNotificatioClose
+    ApplicationNotificatioClose,
+    ApplicationDialogShow,
+    ApplicationDialogClose,
+    ApplicationDialogAddAction,
+    ApplicationDialogAlert
 } from './actions';
 
 const types = {
@@ -24,7 +31,10 @@ const types = {
     APPLICATION_MENU_CLOSE,
     APPLICATION_NOTIFICATION_ADD,
     APPLICATION_NOTIFICATION_SHOW,
-    APPLICATION_NOTIFICATION_CLOSE
+    APPLICATION_NOTIFICATION_CLOSE,
+    APPLICATION_DIALOG_SHOW,
+    APPLICATION_DIALOG_CLOSE,
+    APPLICATION_DIALOG_ADD_ACTION
 };
 
 const actions = {
@@ -33,7 +43,11 @@ const actions = {
     ApplicationMenuClose,
     ApplicationNotificatioAdd,
     ApplicationNotificatioShow,
-    ApplicationNotificatioClose
+    ApplicationNotificatioClose,
+    ApplicationDialogShow,
+    ApplicationDialogClose,
+    ApplicationDialogAddAction,
+    ApplicationDialogAlert
 };
 
 export {
