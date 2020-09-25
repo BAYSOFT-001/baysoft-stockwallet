@@ -27,7 +27,8 @@ const IndexPage = (props) => {
         actions: {
             'add': { handler: () => { redirectToAdd(); } },
             'edit': { handler: (id) => { redirectToEdit(id); } },
-            'delete': { handler: (ids, callback) => { deleteHandler(ids, callback); } }
+            'delete': { handler: (ids, callback) => { deleteHandler(ids, callback); } },
+            //'filter': { component: null }
         }
     };
     const api = props.CreateApiService(`samples-service`, 'https://localhost:4101/api/samples');

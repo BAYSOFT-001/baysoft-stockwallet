@@ -121,7 +121,7 @@ const ApiConnectedTable = props => {
     const classes = useStyles();
     const [requestUrl, setRequestUrl] = useState(config.endPoint);
     const [response, setResponse] = useState(null);
-    
+
     const api = props.CreateApiService(`${config.configId}-service`, config.endPoint);
     const filter = props.CreateApiFilter(`${config.configId}-filter`);
 
@@ -282,11 +282,12 @@ const ApiConnectedTable = props => {
                                             <Add />
                                         </IconButton>
                                     </Tooltip>) : null}
-                                <Tooltip title="Filter list">
-                                    <IconButton aria-label="filter list" onClick={handleClickFilter}>
-                                        <FilterList />
-                                    </IconButton>
-                                </Tooltip>
+                                {allowAction('filter') ? (
+                                    <Tooltip title="Filter list">
+                                        <IconButton aria-label="filter list" onClick={handleClickFilter}>
+                                            <FilterList />
+                                        </IconButton>
+                                    </Tooltip>) : null}
                             </React.Fragment>
                         )}
                 </Toolbar>

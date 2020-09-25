@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import { MuiThemeProvider, createMuiTheme } from '@material-ui/core';
 
 import blue from '@material-ui/core/colors/blue';
-import deepOrange from '@material-ui/core/colors/deepOrange';
+import red from '@material-ui/core/colors/red';
 
 const appTheme = createMuiTheme({
     typography: {
@@ -11,7 +11,7 @@ const appTheme = createMuiTheme({
     },
     palette: {
         primary: blue,
-        secondary: deepOrange,
+        secondary: red,
     }
 })
 
