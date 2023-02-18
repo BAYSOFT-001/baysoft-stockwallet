@@ -7,5 +7,6 @@ namespace BAYSOFT.Core.Domain.Interfaces.Infrastructures.Services
 {
     public interface IEmailService
     {
+        Task SendEmailAsync(string email, string subject, string htmlMessage);
     }
 }
